@@ -1,3 +1,8 @@
+/*
+ * Author: Alex Zhou
+ * Date: 2018.10.26
+ */
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,7 +18,7 @@ public class InventoryPanel implements ActionListener
 	public InventoryPanel()
 	{
 		inventoryPanel = new JPanel();
-		inventoryPanel.setPreferredSize(new Dimension(2500,1400));
+		inventoryPanel.setPreferredSize(new Dimension(650,500));
 		
 		addInventory  = new JButton("Add Inventory");
 		addInventory.addActionListener(this);
