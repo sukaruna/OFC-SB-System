@@ -5,25 +5,22 @@
 
 import java.util.ArrayList;
 
-public class Food extends Product
+public class Supply extends Product
 {
-	private double price, emPrice;
 	private int purchaseUnit, sellingUnit;
 	private ArrayList<String> ExDates = new ArrayList<String>();
 	
-	public Food(String n, String t, int ls, int a, double p, double emp, int pu, int su, int y, int m, int d)
+	public Supply(String n, String t, int ls, int a, int pu, int su, int y, int m, int d)
 	{
 		super(n, t, ls, a);
-		setPrice(p);
-		setEmployeePrice(emp);
 		setPurchaseUnit(pu);
 		setSellingUnit(su);
 		addExDate(y, m, d);
 	}
 	
-	public Food(String n, String t, int ls, double p, int pu, int su)
+	public Supply(String n, String t, int ls, double p, int pu, int su)
 	{
-		this(n, t, ls, 0, p, 0, pu, su, 0, 0, 0);
+		this(n, t, ls, 0, pu, su, 0, 0, 0);
 	}
 	
 	public void addExDate(int y, int m, int d)
@@ -78,16 +75,6 @@ public class Food extends Product
 		ExDates.remove(0);
 	}
 	
-	public void setPrice(double p)
-	{
-		price = p;
-	}
-	
-	public void setEmployeePrice(double emp)
-	{
-		emPrice = emp;
-	}
-	
 	public void setPurchaseUnit(int pu)
 	{
 		purchaseUnit = pu;
@@ -96,16 +83,6 @@ public class Food extends Product
 	public void setSellingUnit(int su)
 	{
 		sellingUnit = su;
-	}
-	
-	public double getPrice()
-	{
-		return price;
-	}
-	
-	public double getEmployeePrice()
-	{
-		return emPrice;
 	}
 	
 	public int getPurchaseUnit()
