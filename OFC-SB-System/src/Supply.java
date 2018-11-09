@@ -1,26 +1,25 @@
 /*
  * Author: Alex Zhou
- * Date: 2018.10.30
+ * Date: 2018.11.06
  */
 
 import java.util.ArrayList;
 
 public class Supply extends Product
 {
-	private int purchaseUnit, sellingUnit;
+	private int lowStock, amount;
 	private ArrayList<String> ExDates = new ArrayList<String>();
 	
-	public Supply(String n, String t, int ls, int a, int pu, int su, int y, int m, int d)
+	public Supply(String n, String t, int ls, int a, int y, int m, int d)
 	{
-		super(n, t, ls, a);
-		setPurchaseUnit(pu);
-		setSellingUnit(su);
+		super(n, t);
+		setLowStock(ls);
 		addExDate(y, m, d);
 	}
 	
-	public Supply(String n, String t, int ls, double p, int pu, int su)
+	public Supply(String n, String t, int ls)
 	{
-		this(n, t, ls, 0, pu, su, 0, 0, 0);
+		this(n, t, ls, 0, 0, 0, 0);
 	}
 	
 	public void addExDate(int y, int m, int d)
@@ -75,23 +74,13 @@ public class Supply extends Product
 		ExDates.remove(0);
 	}
 	
-	public void setPurchaseUnit(int pu)
+	public void setLowStock(int ls)
 	{
-		purchaseUnit = pu;
+		lowStock = ls;
 	}
 	
-	public void setSellingUnit(int su)
+	public int getLowStock()
 	{
-		sellingUnit = su;
-	}
-	
-	public int getPurchaseUnit()
-	{
-		return purchaseUnit;
-	}
-	
-	public int getSellingUnit()
-	{
-		return sellingUnit;
+		return lowStock;
 	}
 }

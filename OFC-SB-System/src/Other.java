@@ -5,13 +5,11 @@
 
 public class Other extends Product
 {
-	private int purchaseUnit, sellingUnit;
+	private int lowStock, amount, purchaseUnit, sellingUnit;
 	
 	public Other(String n, String t, int ls, int a, int pu, int su)
 	{
-		super(n, t, ls, a);
-		setPurchaseUnit(pu);
-		setSellingUnit(su);
+		super(n, t);
 	}
 	
 	public Other(String n, String t, int ls, int pu, int su)
@@ -19,23 +17,23 @@ public class Other extends Product
 		this(n, t, ls, 0, pu, su);
 	}
 	
-	public void setPurchaseUnit(int pu)
+	public void setLowStock(int ls)
 	{
-		purchaseUnit = pu;
+		lowStock = ls;
 	}
 	
-	public void setSellingUnit(int su)
+	public void setAmoutn(int a)
 	{
-		sellingUnit = su;
+		amount = a;
 	}
 	
-	public int getPurchaseUnit()
+	public int getLowStock()
 	{
-		return purchaseUnit;
+		return lowStock;
 	}
 	
-	public int getSellingUnit()
+	public int getAmount()
 	{
-		return sellingUnit;
+		return amount;
 	}
 }
