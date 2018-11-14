@@ -6,11 +6,17 @@
 public class Product
 {
 	private String name, type;
-	
-	public Product(String n, String t)
+	private int ID;
+	public Product(int id, String n, String t)
 	{
+		ID = id;
 		name = n;
 		type = t;
+	}
+	
+	public void setID(int id)
+	{
+		ID = id;
 	}
 	
 	public void setName(String n)
@@ -21,6 +27,11 @@ public class Product
 	public void setType(String t)
 	{
 		type = t;
+	}
+	
+	public int getID()
+	{
+		return ID;
 	}
 	
 	public String getName()

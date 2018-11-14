@@ -10,16 +10,22 @@ public class Supply extends Product
 	private int lowStock, amount;
 	private ArrayList<String> ExDates = new ArrayList<String>();
 	
-	public Supply(String n, String t, int ls, int a, int y, int m, int d)
+	public Supply(int id, String n, String t, int ls, int a, int y, int m, int d)
 	{
-		super(n, t);
+		super(id, n, t);
 		setLowStock(ls);
+		setAmount(a);
 		addExDate(y, m, d);
 	}
 	
-	public Supply(String n, String t, int ls)
+	public Supply(int id, String n, String t, int ls)
 	{
-		this(n, t, ls, 0, 0, 0, 0);
+		this(id, n, t, ls, 0, 0, 0, 0);
+	}
+	
+	public void addAmount(int a)
+	{
+		amount += a;
 	}
 	
 	public void addExDate(int y, int m, int d)
@@ -74,9 +80,19 @@ public class Supply extends Product
 		ExDates.remove(0);
 	}
 	
+	public void setAmount(int a)
+	{
+		amount = a;
+	}
+	
 	public void setLowStock(int ls)
 	{
 		lowStock = ls;
+	}
+	
+	public int getAmount()
+	{
+		return amount;
 	}
 	
 	public int getLowStock()

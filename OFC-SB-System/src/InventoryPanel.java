@@ -62,6 +62,9 @@ public class InventoryPanel implements ActionListener
 	
 	public void actionPerformed(ActionEvent e)
 	{
-		
+		if(e.getSource() == addProductBtn)
+		{
+			new AddProductFrame();
+		}
 	}
 }
