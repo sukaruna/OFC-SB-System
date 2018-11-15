@@ -19,10 +19,10 @@ public class AddProductFrame extends JFrame implements ActionListener
 {
 	private JFrame addProductFrame;
 	private JPanel addProductPanel;
-	private JButton addBtn, deleteBtn;
+	private JButton addBtn, cancelBtn;
 	private JLabel nameLabel, typeLabel, priceLabel, emPriceLabel, lowStockLabel;
-	private JTextField nameTF, priceTF, emPriceTF;
-	private JComboBox typeCB;
+	private JTextField nameTF, priceTF, emPriceTF, lowStockTF;
+	private JComboBox<String> typeCB;
 	
 	public AddProductFrame()
 	{
@@ -55,26 +55,98 @@ public class AddProductFrame extends JFrame implements ActionListener
 		lowStockLabel.setBounds(20, 220, 100, 33);
 		addProductPanel.add(lowStockLabel);
 		
+		nameTF = new JTextField();
+		nameTF.setBounds(150, 20, 100, 33);
+		addProductPanel.add(nameTF);
+		
+		priceTF = new JTextField();
+		priceTF.setBounds(150, 120, 100, 33);
+		addProductPanel.add(priceTF);
+		
+		emPriceTF = new JTextField();
+		emPriceTF.setBounds(150, 170, 100, 33);
+		addProductPanel.add(emPriceTF);
+		
+		lowStockTF = new JTextField();
+		lowStockTF.setBounds(150, 220, 100, 33);
+		addProductPanel.add(lowStockTF);
+		
+		String[] typeList = {"", "Supply", "Menu", "Other"};
+		typeCB = new JComboBox<String>(typeList);
+		typeCB.setSelectedIndex(0);
+		typeCB.setBounds(150, 70, 100, 33);
+		typeCB.addActionListener(new ActionListener()
+				{
+					@SuppressWarnings("unchecked")
+					public void actionPerformed(ActionEvent e)
+					{
+						JComboBox<String> combo = (JComboBox<String>) e.getSource();
+				        String type = (String) combo.getSelectedItem();
+				        
+				        switch (type)
+				        {
+				        case "":
+				        	break;
+				        case "Supply":
+				        	priceTF.setEnabled(false);
+				        	emPriceTF.setEnabled(false);
+				        	lowStockTF.setEnabled(true);
+				        	break;
+				        case "Menu":
+				        	priceTF.setEnabled(true);
+				        	emPriceTF.setEnabled(true);
+				        	lowStockTF.setEnabled(false);
+				        	break;
+				        case "Other":
+				        	priceTF.setEnabled(false);
+				        	emPriceTF.setEnabled(false);
+				        	lowStockTF.setEnabled(true);
+				        	break;
+				        }
+					}
+				});
+		addProductPanel.add(typeCB);
+		
 		addBtn = new JButton("Add");
 		addBtn.setBounds(100, 400, 120, 33);
 		addBtn.addActionListener(this);
 		addProductPanel.add(addBtn);
 		
-		deleteBtn = new JButton("Delete");
-		deleteBtn.setBounds(400, 400, 120, 33);
-		deleteBtn.addActionListener(this);
-		addProductPanel.add(deleteBtn);
-		
-		String[] typeList = {"Supply", "Menu", "Other"};
-		typeCB = new JComboBox(typeList);
+		cancelBtn = new JButton("Cancel");
+		cancelBtn.setBounds(400, 400, 120, 33);
+		cancelBtn.addActionListener(this);
+		addProductPanel.add(cancelBtn);
 		
 		addProductFrame.add(addProductPanel);
 		addProductFrame.pack();
 		addProductFrame.setVisible(true);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void actionPerformed(ActionEvent e)
 	{
+		if(e.getSource() == addBtn)
+		{
+			JComboBox<String> combo = (JComboBox<String>) e.getSource();
+	        String type = (String) combo.getSelectedItem();
+	        
+			if(type.compareTo("Supply") == 0 || type.compareTo("Other") == 0)
+			{
+				
+			}
+			else if(type.compareTo("Menu") == 0)
+			{
+				
+			}
+			else
+			{
+				
+			}
+		}
 		
+		if(e.getSource() == cancelBtn)
+		{
+			addProductFrame.dispose();
+		}
 	}
 }

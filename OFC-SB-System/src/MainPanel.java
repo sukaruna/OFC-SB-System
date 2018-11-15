@@ -70,5 +70,10 @@ public class MainPanel implements ActionListener
 			MainFrame.overallFrame.repaint();
 			new InventoryPanel();
 		}
+		
+		if(e.getSource() == cashBtn)
+		{
+			
+		}
 	}
 }

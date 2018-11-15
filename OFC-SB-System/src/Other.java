@@ -7,16 +7,16 @@ public class Other extends Product
 {
 	private int lowStock, amount;
 	
-	public Other(int id, String n, String t, int ls, int a, int pu, int su)
+	public Other(int id, String n, String t, int ls, int a)
 	{
 		super(id, n, t);
 		setLowStock(ls);
 		setAmount(a);
 	}
 	
-	public Other(int id, String n, String t, int ls, int pu, int su)
+	public Other(int id, String n, String t, int ls)
 	{
-		this(id, n, t, ls, 0, pu, su);
+		this(id, n, t, ls, 0);
 	}
 	
 	public void setLowStock(int ls)
