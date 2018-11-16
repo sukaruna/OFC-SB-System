@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,6 +19,7 @@ public class AddInventoryFrame extends JFrame implements ActionListener
 	private JFrame addInventoryFrame;
 	private JPanel addInventoryPanel;
 	private JLabel scaleLabel, amountLabel, exDateLabel;
+	private JButton addBtn, cancelBtn;
 	
 	public AddInventoryFrame()
 	{
@@ -41,6 +44,16 @@ public class AddInventoryFrame extends JFrame implements ActionListener
 		exDateLabel.setBounds(20, 120, 100, 33);
 		addInventoryPanel.add(exDateLabel);
 		
+		addBtn = new JButton("Add");
+		addBtn.setBounds(100, 400, 120, 33);
+		addBtn.addActionListener(this);
+		addInventoryPanel.add(addBtn);
+		
+		cancelBtn = new JButton("Cancel");
+		cancelBtn.setBounds(400, 400, 120, 33);
+		cancelBtn.addActionListener(this);
+		addInventoryPanel.add(cancelBtn);
+		
 		addInventoryFrame.add(addInventoryPanel);
 		addInventoryFrame.pack();
 		addInventoryFrame.setVisible(true);
@@ -48,6 +61,14 @@ public class AddInventoryFrame extends JFrame implements ActionListener
 	
 	public void actionPerformed(ActionEvent e)
 	{
+		if(e.getSource() == addBtn)
+		{
+			
+		}
 		
+		if(e.getSource() == cancelBtn)
+		{
+			addInventoryFrame.dispose();
+		}
 	}
 }

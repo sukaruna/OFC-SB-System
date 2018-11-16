@@ -16,8 +16,10 @@ public class ProductDAO
 {
 	private Connection myConn;
 	
+	//constructor
 	public ProductDAO() throws Exception
 	{
+		//read properties from the properties file
 		Properties props = new Properties();
 		props.load(new FileInputStream("config.properties"));
 		
@@ -25,6 +27,7 @@ public class ProductDAO
 		String user = props.getProperty("user");
 		String password = props.getProperty("password");
 		
+		//create connection
 		myConn = DriverManager.getConnection(dbUrl, user, password);
 	}
 	

@@ -20,14 +20,18 @@ public class MainPanel implements ActionListener
 	private JButton cashBtn, inventoryBtn;
 	private ImageIcon buttonImage;
 	
+	//constructor
 	public MainPanel()
 	{
+		//the image that is needed for the buttons
 		buttonImage = new ImageIcon("Image/button.png");
 		Font buttonFont = new Font("Arial", Font.PLAIN, 23);
 		
+		//overall panel
 		mainMenuPanel = new JPanel();
 		mainMenuPanel.setLayout(null);
 		
+		//setting for the label on the top of the main frame
 		titleLabel = new JLabel("Ottawa Family Cinema Snack Bar");
 		titleLabel.setOpaque(true);
 		titleLabel.setBounds(0, 0, 650, 100);
@@ -35,6 +39,7 @@ public class MainPanel implements ActionListener
 		titleLabel.setBackground(Color.CYAN);
 		mainMenuPanel.add(titleLabel);
 		
+		//jump to cash system if this button is clicked
 		cashBtn = new JButton("Cash System");
 		cashBtn.setBounds(225, 220, 200, 65);
 		cashBtn.setFont(buttonFont);
@@ -46,6 +51,7 @@ public class MainPanel implements ActionListener
 		cashBtn.addActionListener(this);
 		mainMenuPanel.add(cashBtn);
 		
+		//jump to inventory system if this button is clicked
 		inventoryBtn = new JButton("Inventory System");
 		inventoryBtn.setBounds(225, 300, 200, 65);
 		inventoryBtn.setFont(buttonFont);
@@ -57,6 +63,7 @@ public class MainPanel implements ActionListener
 		inventoryBtn.addActionListener(this);
 		mainMenuPanel.add(inventoryBtn);
 		
+		//add the main panel to the main frame and pack
 		MainFrame.overallFrame.add(mainMenuPanel);
 		MainFrame.overallFrame.pack();
 		MainFrame.overallFrame.setVisible(true);
@@ -66,6 +73,7 @@ public class MainPanel implements ActionListener
 	{
 		if(e.getSource() == inventoryBtn)
 		{
+			//remove all the content on the main frame and load the inventory system
 			MainFrame.overallFrame.getContentPane().removeAll();
 			MainFrame.overallFrame.repaint();
 			new InventoryPanel();
@@ -73,7 +81,7 @@ public class MainPanel implements ActionListener
 		
 		if(e.getSource() == cashBtn)
 		{
-			
+			//remove all the content on the main frame and load the cash system
 		}
 	}
 }
