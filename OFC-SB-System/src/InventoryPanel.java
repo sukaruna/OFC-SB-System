@@ -16,7 +16,7 @@ public class InventoryPanel implements ActionListener
 	private JScrollPane productPane;
 	private JTextField searchTF;
 	private JPanel inventoryPanel;
-	private JButton searchBtn, addInventoryBtn, editBtn, addProductBtn, deleteBtn;
+	private JButton homeBtn, searchBtn, addInventoryBtn, editBtn, addProductBtn, deleteBtn;
 	
 	//constructor
 	public InventoryPanel()
@@ -34,6 +34,11 @@ public class InventoryPanel implements ActionListener
 		searchTF = new JTextField();
 		searchTF.setBounds(10, 20, 300, 33);
 		inventoryPanel.add(searchTF);
+		
+		homeBtn = new JButton("Home");
+		homeBtn.setBounds(550, 20, 50, 50);
+		homeBtn.addActionListener(this);
+		inventoryPanel.add(homeBtn);
 		
 		//search button to search
 		searchBtn = new JButton("Search");
@@ -72,6 +77,13 @@ public class InventoryPanel implements ActionListener
 	
 	public void actionPerformed(ActionEvent e)
 	{
+		if(e.getSource() == homeBtn)
+		{
+			MainFrame.overallFrame.getContentPane().removeAll();
+			MainFrame.overallFrame.repaint();
+			new MainPanel();
+		}
+		
 		if(e.getSource() == addProductBtn)
 		{
 			//create a new frame to add new products

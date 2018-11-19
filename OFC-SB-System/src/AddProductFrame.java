@@ -9,8 +9,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,6 +21,7 @@ import javax.swing.JTextField;
 public class AddProductFrame extends JFrame implements ActionListener
 {
 	private int count = 0;
+	@SuppressWarnings("rawtypes")
 	private JComboBox[] materialCB = new JComboBox[9];
 	private JFrame addProductFrame;
 	private JPanel addProductPanel, comboPanel;
@@ -47,7 +46,6 @@ public class AddProductFrame extends JFrame implements ActionListener
 		comboPanel = new JPanel();
 		comboPanel.setLayout(new GridLayout(3, 3, 5, 5));
 		comboPanel.setBounds(150, 270, 450, 150);
-//		comboPanel.setBackground(Color.GRAY);
 		for(int i = 0; i < materialCB.length; i++)
 		{
 			materialCB[i] = new JComboBox<String>(supplyList);
@@ -159,6 +157,10 @@ public class AddProductFrame extends JFrame implements ActionListener
 		{
 			materialCB[count].setVisible(true);
 			count++;
+			if(count == 9)
+			{
+				addCBBtn.setVisible(false);
+			}
 		}
 		
 		if(e.getSource() == addBtn)
