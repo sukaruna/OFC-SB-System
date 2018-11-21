@@ -16,7 +16,7 @@ public class InventoryPanel implements ActionListener
 	private JScrollPane productPane;
 	private JTextField searchTF;
 	private JPanel inventoryPanel;
-	private JButton homeBtn, searchBtn, addInventoryBtn, editBtn, addProductBtn, deleteBtn;
+	private JButton homeBtn, searchBtn, expirationBtn, lowStockBtn, addInventoryBtn, editBtn, addProductBtn, deleteBtn;
 	
 	//constructor
 	public InventoryPanel()
@@ -46,27 +46,37 @@ public class InventoryPanel implements ActionListener
 		searchBtn.addActionListener(this);
 		inventoryPanel.add(searchBtn);
 		
+		expirationBtn = new JButton("Expirations");
+		expirationBtn.setBounds(520, 90, 120, 33);
+		expirationBtn.addActionListener(this);
+		inventoryPanel.add(expirationBtn);
+		
+		lowStockBtn = new JButton("Low-stocks");
+		lowStockBtn.setBounds(520, 160, 120, 33);
+		lowStockBtn.addActionListener(this);
+		inventoryPanel.add(lowStockBtn);
+		
 		//create a new frame to add inventory to existing products if this button is clicked
 		addInventoryBtn = new JButton("Add Inventory");
-		addInventoryBtn.setBounds(520, 150, 120, 33);
+		addInventoryBtn.setBounds(520, 230, 120, 33);
 		addInventoryBtn.addActionListener(this);
 		inventoryPanel.add(addInventoryBtn);
 		
 		//create a new frame to edit the properties of selected product if this button is clicked
 		editBtn = new JButton("Edit Product");
-		editBtn.setBounds(520, 220, 120, 33);
+		editBtn.setBounds(520, 300, 120, 33);
 		editBtn.addActionListener(this);
 		inventoryPanel.add(editBtn);
 		
 		//create a new frame to add a new type of product if this button is clicked
 		addProductBtn = new JButton("Add Product");
-		addProductBtn.setBounds(520, 290, 120, 33);
+		addProductBtn.setBounds(520, 370, 120, 33);
 		addProductBtn.addActionListener(this);
 		inventoryPanel.add(addProductBtn);
 		
 		//delete selected product from the list
 		deleteBtn = new JButton("Delete Product");
-		deleteBtn.setBounds(520, 360, 120, 33);
+		deleteBtn.setBounds(520, 440, 120, 33);
 		deleteBtn.addActionListener(this);
 		inventoryPanel.add(deleteBtn);
 		
@@ -83,11 +93,15 @@ public class InventoryPanel implements ActionListener
 			MainFrame.overallFrame.repaint();
 			new MainPanel();
 		}
-		
-		if(e.getSource() == addProductBtn)
+
+		if(e.getSource() == expirationBtn)
 		{
-			//create a new frame to add new products
-			new AddProductFrame();
+			new ExpirationFrame();
+		}
+		
+		if(e.getSource() == lowStockBtn)
+		{
+			new LowStockFrame();
 		}
 		
 		if(e.getSource() == addInventoryBtn)
@@ -95,5 +109,13 @@ public class InventoryPanel implements ActionListener
 			//create a new frame to add inventory
 			new AddInventoryFrame();
 		}
+		
+		if(e.getSource() == addProductBtn)
+		{
+			//create a new frame to add new products
+			new AddProductFrame();
+		}
+		
+		
 	}
 }
