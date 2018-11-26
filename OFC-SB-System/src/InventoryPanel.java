@@ -5,30 +5,63 @@
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class InventoryPanel implements ActionListener
 {
+	private ProductDAO dao;
 	private JScrollPane productPane;
+	private JTable supplyTable;
 	private JTextField searchTF;
 	private JPanel inventoryPanel;
 	private JButton homeBtn, searchBtn, expirationBtn, lowStockBtn, addInventoryBtn, editBtn, addProductBtn, deleteBtn;
 	
 	//constructor
-	public InventoryPanel()
+	public InventoryPanel() throws Exception
 	{
+		try
+		{
+			dao = new ProductDAO();
+		}
+		catch(Exception e1)
+		{
+			e1.printStackTrace();
+		}
+		
 		//setting for inventory panel
 		inventoryPanel = new JPanel();
 		inventoryPanel.setLayout(null);
 		
+		supplyTable = new JTable();
+		try
+		{
+			List<Supply> supplyList = dao.getAllSupplies();
+			SupplyTableModel supplyModel = new SupplyTableModel(supplyList);
+			supplyTable.setModel(supplyModel);
+		}
+		catch(Exception e1)
+		{
+			e1.printStackTrace();
+		}
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalTextPosition(DefaultTableCellRenderer.CENTER);
+		for(int i = 0; i < supplyTable.getColumnCount(); i++)
+		{
+			supplyTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
+		}
+		
 		//a scroll pane with a list of products
 		productPane = new JScrollPane();
 		productPane.setBounds(10, 70, 500, 400);
-		inventoryPanel.add(productPane);
+		productPane.setViewportView(supplyTable);
+		inventoryPanel.add(productPane);	
 		
 		//search bar to search products
 		searchTF = new JTextField();

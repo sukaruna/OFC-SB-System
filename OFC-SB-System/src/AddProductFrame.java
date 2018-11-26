@@ -113,16 +113,22 @@ public class AddProductFrame extends JFrame implements ActionListener
 				        case "Supply":
 				        	setDisabled(priceTF);
 				        	setDisabled(emPriceTF);
+				        	setDisabled(addCBBtn);
+//				        	setDisabled(comboPanel);
 				        	setEnabled(lowStockTF);
 				        	break;
 				        case "Menu":
 				        	setEnabled(priceTF);
 				        	setEnabled(emPriceTF);
+				        	setEnabled(addCBBtn);
+//				        	setEnabled(comboPanel);
 				        	setDisabled(lowStockTF);
 				        	break;
 				        case "Other":
 				        	setDisabled(priceTF);
 				        	setDisabled(emPriceTF);
+				        	setDisabled(addCBBtn);
+//				        	setDisabled(comboPanel);
 				        	setEnabled(lowStockTF);
 				        	break;
 				        }

@@ -3,24 +3,22 @@
  * Date: 2018.11.06
  */
 
-import java.util.ArrayList;
-
 public class Supply extends Product
 {
 	private int lowStock, amount;
-	private ArrayList<String> ExDates = new ArrayList<String>();
+	private String exDates;
 	
-	public Supply(int id, String n, String t, int ls, int a, int y, int m, int d)
+	public Supply(int id, String n, String t, int ls, int a, String ed)
 	{
 		super(id, n, t);
 		setLowStock(ls);
 		setAmount(a);
-		addExDate(y, m, d);
+		setExDates(ed);
 	}
 	
 	public Supply(int id, String n, String t, int ls)
 	{
-		this(id, n, t, ls, 0, 0, 0, 0);
+		this(id, n, t, ls, 0, "");
 	}
 	
 	public void addAmount(int a)
@@ -32,13 +30,13 @@ public class Supply extends Product
 	{
 		if(y != 0 && m != 0 && d != 0)
 		{
-			ExDates.add(y + " " + m + " " + d);
+			exDates += y + " " + m + " " + d + "&";
 		}
 	}
 	
 	public boolean checkExpiration(int y, int m, int d)
 	{
-		String[] date = ExDates.get(0).split("\\s+");
+		String[] date = exDates.substring(exDates.indexOf("&")).split("\\s+");
 		int year = Integer.parseInt(date[0]);
 		int month = Integer.parseInt(date[1]);
 		int day = Integer.parseInt(date[2]);
@@ -77,7 +75,7 @@ public class Supply extends Product
 	
 	public void deleteClosestExDate()
 	{
-		ExDates.remove(0);
+		exDates = exDates.substring(exDates.indexOf("&") + 1);
 	}
 	
 	public void setAmount(int a)
@@ -90,6 +88,11 @@ public class Supply extends Product
 		lowStock = ls;
 	}
 	
+	public void setExDates(String ed)
+	{
+		exDates = ed;
+	}
+	
 	public int getAmount()
 	{
 		return amount;
@@ -98,5 +101,10 @@ public class Supply extends Product
 	public int getLowStock()
 	{
 		return lowStock;
+	}
+	
+	public String getExDates()
+	{
+		return exDates;
 	}
 }
