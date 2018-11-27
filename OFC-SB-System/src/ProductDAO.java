@@ -6,6 +6,7 @@
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -29,6 +30,30 @@ public class ProductDAO
 		String password = props.getProperty("password");
 		//create connection
 		myConn = DriverManager.getConnection(dbUrl, user, password);
+	}
+	
+	public void addSupplyA(Supply theSupply) throws Exception
+	{
+		PreparedStatement myPpSt = null;
+		
+		try
+		{
+			myPpSt = myConn.prepareStatement("insert into Supply"
+					+ " (name, type, low_stock, amount, expiration_dates)"
+					+ " values (?, ?, ?, ?, ?)");
+			
+			myPpSt.setString(1, theSupply.getName());
+			myPpSt.setString(2, theSupply.getType());
+			myPpSt.setInt(3, theSupply.getLowStock());
+			myPpSt.setInt(4, theSupply.getAmount());
+			myPpSt.setString(5, theSupply.getExDates());
+			
+			myPpSt.executeUpdate();
+		}
+		finally
+		{
+			close(myPpSt);
+		}
 	}
 	
 	public List<Supply> getAllSupplies() throws Exception
@@ -70,15 +95,16 @@ public class ProductDAO
 		return tempSupply;
 	}
 	
-	private void close(Connection myConn, Statement myStmt, ResultSet myRs) throws SQLException
+	private void close(Connection myConn, Statement mySt, ResultSet myRs) throws SQLException
 	{
 		if (myRs != null)
 		{
 			myRs.close();
 		}
 
-		if (myStmt != null)
+		if (mySt != null)
 		{
+			mySt.close();
 		}
 		
 		if (myConn != null)
@@ -87,8 +113,13 @@ public class ProductDAO
 		}
 	}
 
-	private void close(Statement myStmt, ResultSet myRs) throws SQLException
+	private void close(Statement mySt, ResultSet myRs) throws SQLException
 	{
-		close(null, myStmt, myRs);		
-	}	
+		close(null, mySt, myRs);		
+	}
+	
+	private void close(Statement mySt) throws SQLException
+	{
+		close(null, mySt, null);
+	}
 }
