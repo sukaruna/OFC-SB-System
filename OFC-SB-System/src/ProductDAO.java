@@ -32,7 +32,7 @@ public class ProductDAO
 		myConn = DriverManager.getConnection(dbUrl, user, password);
 	}
 	
-	public void addSupplyA(Supply theSupply) throws Exception
+	public void addSupply(Supply theSupply) throws Exception
 	{
 		PreparedStatement myPpSt = null;
 		
@@ -75,6 +75,30 @@ public class ProductDAO
 			}
 			
 			return list;
+		}
+		finally
+		{
+			close(mySt, myRs);
+		}
+	}
+	
+	public int getLastID(String type) throws Exception
+	{
+		int lastID = 0;
+		Statement mySt = null;
+		ResultSet myRs = null;
+		
+		try
+		{
+			mySt = myConn.createStatement();
+			myRs = mySt.executeQuery("select * from " + type);
+			
+			while(myRs.next())
+			{
+				lastID++;
+			}
+			
+			return lastID;
 		}
 		finally
 		{

@@ -76,7 +76,6 @@ public class MainPanel implements ActionListener
 			//remove all the content on the main frame and load the inventory system
 			MainFrame.overallFrame.getContentPane().removeAll();
 			MainFrame.overallFrame.repaint();
-			
 			try
 			{
 				new InventoryPanel();

@@ -20,6 +20,8 @@ import javax.swing.JTextField;
 
 public class AddProductFrame extends JFrame implements ActionListener
 {
+	private ProductDAO dao;
+	private String type;
 	private int count = 0;
 	@SuppressWarnings("rawtypes")
 	private JComboBox[] materialCB = new JComboBox[9];
@@ -32,6 +34,15 @@ public class AddProductFrame extends JFrame implements ActionListener
 	
 	public AddProductFrame()
 	{
+		try
+		{
+			dao = new ProductDAO();
+		}
+		catch(Exception e1)
+		{
+			e1.printStackTrace();
+		}
+		
 		String[] supplyList = {"a", "b", "c", "d", "e"};//supplies in the database
 		
 		addProductFrame = new JFrame("Add Product");
@@ -104,7 +115,7 @@ public class AddProductFrame extends JFrame implements ActionListener
 					public void actionPerformed(ActionEvent e)
 					{
 						JComboBox<String> combo = (JComboBox<String>) e.getSource();
-				        String type = (String) combo.getSelectedItem();
+				        type = (String) combo.getSelectedItem();
 				        
 				        switch (type)
 				        {
@@ -171,11 +182,24 @@ public class AddProductFrame extends JFrame implements ActionListener
 		
 		if(e.getSource() == addBtn)
 		{
-			JComboBox<String> combo = (JComboBox<String>) e.getSource();
-	        String type = (String) combo.getSelectedItem();
-	        
 			if(type.compareTo("Supply") == 0 || type.compareTo("Other") == 0)
 			{
+				String name = nameTF.getText();
+				int lowStock = Integer.parseInt(lowStockTF.getText());
+				
+				if(type.compareTo("Supply") == 0)
+				{
+					try
+					{
+						int newID = dao.getLastID(type);
+						Supply temp = new Supply(newID, name, type, lowStock);
+						dao.addSupply(temp);
+					}
+					catch (Exception e1)
+					{
+						e1.printStackTrace();
+					}
+				}
 				
 			}
 			else if(type.compareTo("Menu") == 0)

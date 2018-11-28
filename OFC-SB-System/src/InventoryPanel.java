@@ -3,6 +3,8 @@
  * Date: 2018.10.26
  */
 
+import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -17,11 +19,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class InventoryPanel implements ActionListener
 {
 	private ProductDAO dao;
-	private JScrollPane productPane;
+	private JScrollPane supplyPane, menuPane, otherPane;
 	private JTable supplyTable;
 	private JTextField searchTF;
-	private JPanel inventoryPanel;
-	private JButton homeBtn, searchBtn, expirationBtn, lowStockBtn, addInventoryBtn, editBtn, addProductBtn, deleteBtn;
+	private JPanel inventoryPanel, switchPanel;
+	private JButton homeBtn, searchBtn, expirationBtn, lowStockBtn, addInventoryBtn, editBtn, addProductBtn, deleteBtn, supplyBtn, menuBtn, otherBtn;
 	
 	//constructor
 	public InventoryPanel() throws Exception
@@ -38,6 +40,11 @@ public class InventoryPanel implements ActionListener
 		//setting for inventory panel
 		inventoryPanel = new JPanel();
 		inventoryPanel.setLayout(null);
+		
+		switchPanel = new JPanel();
+		switchPanel.setLayout(new CardLayout());
+		switchPanel.setBounds(10, 70, 500, 350);
+		inventoryPanel.add(switchPanel);
 		
 		supplyTable = new JTable();
 		try
@@ -57,16 +64,36 @@ public class InventoryPanel implements ActionListener
 			supplyTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
 		}
 		
-		//a scroll pane with a list of products
-		productPane = new JScrollPane();
-		productPane.setBounds(10, 70, 500, 400);
-		productPane.setViewportView(supplyTable);
-		inventoryPanel.add(productPane);	
+		//a scroll pane with a list of supplies
+		supplyPane = new JScrollPane();
+		supplyPane.setViewportView(supplyTable);
+		switchPanel.add(supplyPane, "Supply");
+		
+		menuPane = new JScrollPane();
+		switchPanel.add(menuPane, "Menu");
+		
+		otherPane = new JScrollPane();
+		switchPanel.add(otherPane, "Other");
 		
 		//search bar to search products
 		searchTF = new JTextField();
 		searchTF.setBounds(10, 20, 300, 33);
 		inventoryPanel.add(searchTF);
+		
+		supplyBtn = new JButton("Supply");
+		supplyBtn.setBounds(100, 430, 100, 33);
+		supplyBtn.addActionListener(this);
+		inventoryPanel.add(supplyBtn);
+		
+		menuBtn = new JButton("Menu");
+		menuBtn.setBounds(200, 430, 100, 33);
+		menuBtn.addActionListener(this);
+		inventoryPanel.add(menuBtn);
+		
+		otherBtn = new JButton("Other");
+		otherBtn.setBounds(300, 430, 100, 33);
+		otherBtn.addActionListener(this);
+		inventoryPanel.add(otherBtn);
 		
 		homeBtn = new JButton("Home");
 		homeBtn.setBounds(550, 20, 50, 50);
@@ -120,6 +147,24 @@ public class InventoryPanel implements ActionListener
 	
 	public void actionPerformed(ActionEvent e)
 	{
+		if(e.getSource() == supplyBtn)
+		{
+			CardLayout cardLayout = (CardLayout) switchPanel.getLayout();
+			cardLayout.show(switchPanel, "Supply");
+		}
+		
+		if(e.getSource() == menuBtn)
+		{
+			CardLayout cardLayout = (CardLayout) switchPanel.getLayout();
+			cardLayout.show(switchPanel, "Menu");
+		}
+		
+		if(e.getSource() == otherBtn)
+		{
+			CardLayout cardLayout = (CardLayout) switchPanel.getLayout();
+			cardLayout.show(switchPanel, "Other");
+		}
+		
 		if(e.getSource() == homeBtn)
 		{
 			MainFrame.overallFrame.getContentPane().removeAll();
