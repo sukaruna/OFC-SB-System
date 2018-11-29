@@ -189,11 +189,11 @@ public class AddProductFrame extends JFrame implements ActionListener
 				
 				if(type.compareTo("Supply") == 0)
 				{
+					Supply temp = new Supply(name, type, lowStock);
 					try
 					{
-						int newID = dao.getLastID(type);
-						Supply temp = new Supply(newID, name, type, lowStock);
 						dao.addSupply(temp);
+						addProductFrame.dispose();
 					}
 					catch (Exception e1)
 					{

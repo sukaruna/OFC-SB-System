@@ -16,9 +16,9 @@ public class Supply extends Product
 		setExDates(ed);
 	}
 	
-	public Supply(int id, String n, String t, int ls)
+	public Supply(String n, String t, int ls)
 	{
-		this(id, n, t, ls, 0, "");
+		this(0, n, t, ls, 0, "");
 	}
 	
 	public void addAmount(int a)

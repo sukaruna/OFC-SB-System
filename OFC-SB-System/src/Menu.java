@@ -25,9 +25,9 @@ public class Menu extends Product
 		this(id, n, t, c, m, p, 0, s);
 	}
 	
-	public Menu(int id, String n, String t, String c, String m, double p)
+	public Menu(String n, String t, String c, String m, double p)
 	{
-		this(id, n, t, c, m, p, 0, 0);
+		this(0, n, t, c, m, p, 0, 0);
 	}
 	
 	public void setCategory(String c)

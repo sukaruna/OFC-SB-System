@@ -82,6 +82,58 @@ public class ProductDAO
 		}
 	}
 	
+	public List<Menu> getAllMenus() throws Exception
+	{
+		List<Menu> list = new ArrayList<>();
+		
+		Statement mySt = null;
+		ResultSet myRs = null;
+		
+		try
+		{
+			mySt = myConn.createStatement();
+			myRs = mySt.executeQuery("select * from Menu");
+			
+			while(myRs.next())
+			{
+				Menu temp = convertRowToMenu(myRs);
+				list.add(temp);
+			}
+			
+			return list;
+		}
+		finally
+		{
+			close(mySt, myRs);
+		}
+	}
+	
+	public List<Other> getAllOthers() throws Exception
+	{
+		List<Other> list = new ArrayList<>();
+		
+		Statement mySt = null;
+		ResultSet myRs = null;
+		
+		try
+		{
+			mySt = myConn.createStatement();
+			myRs = mySt.executeQuery("select * from Supply");
+			
+			while(myRs.next())
+			{
+				Other temp = convertRowToOther(myRs);
+				list.add(temp);
+			}
+			
+			return list;
+		}
+		finally
+		{
+			close(mySt, myRs);
+		}
+	}
+	
 	public int getLastID(String type) throws Exception
 	{
 		int lastID = 0;
@@ -117,6 +169,33 @@ public class ProductDAO
 		
 		Supply tempSupply = new Supply(id, name, type, lowStock, amount, exDates);
 		return tempSupply;
+	}
+	
+	private Menu convertRowToMenu(ResultSet myRs) throws SQLException
+	{
+		int id = myRs.getInt("id");
+		String name = myRs.getString("name");
+		String type = myRs.getString("type");
+		String category = myRs.getString("category");
+		String material = myRs.getString("material");
+		double price = myRs.getDouble("price");
+		double emPrice = myRs.getDouble("employee_price");
+		int sold = myRs.getInt("sold");
+		
+		Menu tempMenu = new Menu(id, name, type, category, material, price, emPrice, sold);
+		return tempMenu;
+	}
+	
+	private Other convertRowToOther(ResultSet myRs) throws SQLException
+	{
+		int id = myRs.getInt("id");
+		String name = myRs.getString("name");
+		String type = myRs.getString("type");
+		int lowStock = myRs.getInt("low_stock");
+		int amount = myRs.getInt("amount");
+		
+		Other tempOther = new Other(id, name, type, lowStock, amount);
+		return tempOther;
 	}
 	
 	private void close(Connection myConn, Statement mySt, ResultSet myRs) throws SQLException
