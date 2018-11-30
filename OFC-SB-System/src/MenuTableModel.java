@@ -1,23 +1,23 @@
 /*
  * Author: Alex Zhou
- * Date: 2018.11.25
+ * Date: 2018.11.29
  */
 
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-class SupplyTableModel extends AbstractTableModel
+class MenuTableModel extends AbstractTableModel
 {
 	public static final int OBJECT_COL = -1;
 	private static final int NAME_COL = 0;
-	private static final int AMOUNT_COL = 1;
-	private String[] columnNames = {"Name", "Amount"};
-	private List<Supply> supply;
+	private static final int PRICE_COL = 1;
+	private String[] columnNames = {"Name", "Price"};
+	private List<Menu> menu;
 	
-	public SupplyTableModel(List<Supply> theSupply)
+	public MenuTableModel(List<Menu> theMenu)
 	{
-		supply = theSupply;
+		menu = theMenu;
 	}
 	
 	@Override
@@ -29,7 +29,7 @@ class SupplyTableModel extends AbstractTableModel
 	@Override
 	public int getRowCount()
 	{
-		return supply.size();
+		return menu.size();
 	}
 
 	@Override
@@ -41,16 +41,16 @@ class SupplyTableModel extends AbstractTableModel
 	@Override
 	public Object getValueAt(int row, int col)
 	{
-		Supply tempSupply = supply.get(row);
+		Menu tempMenu = menu.get(row);
 
 		switch (col)
 		{
 		case NAME_COL:
-			return tempSupply.getName();
-		case AMOUNT_COL:
-			return tempSupply.getAmount();
+			return tempMenu.getName();
+		case PRICE_COL:
+			return tempMenu.getPrice();
 		default:
-			return tempSupply.getName();
+			return tempMenu.getName();
 		}
 	}
 

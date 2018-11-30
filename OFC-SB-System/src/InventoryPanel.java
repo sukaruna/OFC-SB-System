@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -20,14 +21,15 @@ public class InventoryPanel implements ActionListener
 {
 	private ProductDAO dao;
 	private JScrollPane supplyPane, menuPane, otherPane;
-	private JTable supplyTable;
+	private JTable supplyTable, menuTable, otherTable;
 	private JTextField searchTF;
 	private JPanel inventoryPanel, switchPanel;
 	private JButton homeBtn, searchBtn, expirationBtn, lowStockBtn, addInventoryBtn, editBtn, addProductBtn, deleteBtn, supplyBtn, menuBtn, otherBtn;
+	private String card = "Supply";
 	
 	//constructor
 	public InventoryPanel() throws Exception
-	{
+	{	
 		try
 		{
 			dao = new ProductDAO();
@@ -46,6 +48,9 @@ public class InventoryPanel implements ActionListener
 		switchPanel.setBounds(10, 70, 500, 350);
 		inventoryPanel.add(switchPanel);
 		
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalTextPosition(DefaultTableCellRenderer.CENTER);
+		
 		supplyTable = new JTable();
 		try
 		{
@@ -57,11 +62,41 @@ public class InventoryPanel implements ActionListener
 		{
 			e1.printStackTrace();
 		}
-		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
-		dtcr.setHorizontalTextPosition(DefaultTableCellRenderer.CENTER);
 		for(int i = 0; i < supplyTable.getColumnCount(); i++)
 		{
 			supplyTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
+		}
+		
+		menuTable = new JTable();
+		try
+		{
+			List<Menu> menuList = dao.getAllMenus();
+			MenuTableModel menuModel = new MenuTableModel(menuList);
+			menuTable.setModel(menuModel);
+		}
+		catch(Exception e1)
+		{
+			e1.printStackTrace();
+		}
+		for(int i = 0; i < menuTable.getColumnCount(); i++)
+		{
+			menuTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
+		}
+		
+		otherTable = new JTable();
+		try
+		{
+			List<Other> otherList = dao.getAllOthers();
+			OtherTableModel otherModel = new OtherTableModel(otherList);
+			otherTable.setModel(otherModel);
+		}
+		catch(Exception e1)
+		{
+			e1.printStackTrace();
+		}
+		for(int i = 0; i < otherTable.getColumnCount(); i++)
+		{
+			otherTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
 		}
 		
 		//a scroll pane with a list of supplies
@@ -70,9 +105,11 @@ public class InventoryPanel implements ActionListener
 		switchPanel.add(supplyPane, "Supply");
 		
 		menuPane = new JScrollPane();
+		menuPane.setViewportView(menuTable);
 		switchPanel.add(menuPane, "Menu");
 		
 		otherPane = new JScrollPane();
+		otherPane.setViewportView(otherTable);
 		switchPanel.add(otherPane, "Other");
 		
 		//search bar to search products
@@ -151,18 +188,21 @@ public class InventoryPanel implements ActionListener
 		{
 			CardLayout cardLayout = (CardLayout) switchPanel.getLayout();
 			cardLayout.show(switchPanel, "Supply");
+			card = "Supply";
 		}
 		
 		if(e.getSource() == menuBtn)
 		{
 			CardLayout cardLayout = (CardLayout) switchPanel.getLayout();
 			cardLayout.show(switchPanel, "Menu");
+			card = "Menu";
 		}
 		
 		if(e.getSource() == otherBtn)
 		{
 			CardLayout cardLayout = (CardLayout) switchPanel.getLayout();
 			cardLayout.show(switchPanel, "Other");
+			card = "Other";
 		}
 		
 		if(e.getSource() == homeBtn)
@@ -194,6 +234,91 @@ public class InventoryPanel implements ActionListener
 			new AddProductFrame();
 		}
 		
+		if(e.getSource() == editBtn)
+		{
+			
+		}
+		
+		if(e.getSource() == searchBtn)
+		{
+			
+		}
+		
+		if(e.getSource() == deleteBtn)
+		{
+			try
+			{
+				int row;
+				if(card.compareTo("Supply") == 0)
+				{
+					row = supplyTable.getSelectedRow();
+				}
+				else if(card.compareTo("Menu") == 0)
+				{
+					row = menuTable.getSelectedRow();
+				}
+				else
+				{
+					row = otherTable.getSelectedRow();
+				}
+				
+				if(row < 0)
+				{
+					JOptionPane.showMessageDialog(MainFrame.overallFrame, "You must select a product", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				int response = JOptionPane.showConfirmDialog(MainFrame.overallFrame, "Delete this product?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				
+				if (response != JOptionPane.YES_OPTION)
+				{
+					return;
+				}
+				
+				if(card.compareTo("Supply") == 0)
+				{
+					Supply temp = (Supply) supplyTable.getValueAt(row, SupplyTableModel.OBJECT_COL);
+					dao.deleteProduct("Supply", temp.getID());
+				}
+				else if(card.compareTo("Menu") == 0)
+				{
+					Menu temp = (Menu) menuTable.getValueAt(row, MenuTableModel.OBJECT_COL);
+					dao.deleteProduct("Menu", temp.getID());
+				}
+				else
+				{
+					Other temp = (Other) otherTable.getValueAt(row, OtherTableModel.OBJECT_COL);
+					dao.deleteProduct("Other", temp.getID());
+				}
+				
+				JOptionPane.showMessageDialog(MainFrame.overallFrame, "Employee deleted succesfully.", "Employee Deleted", JOptionPane.INFORMATION_MESSAGE);
+			}
+			catch (Exception e1) 
+			{
+				JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error deleting employee: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+	
+	public void refreshEmployeesView()
+	{
+		try
+		{
+			List<Supply> supply = dao.getAllSupplies();
+			SupplyTableModel supplyModel = new SupplyTableModel(supply);
+			supplyTable.setModel(supplyModel);
+			
+			List<Menu> menu = dao.getAllMenus();
+			MenuTableModel menuModel = new MenuTableModel(menu);
+			menuTable.setModel(menuModel);
+			
+			List<Other> other = dao.getAllOthers();
+			OtherTableModel otherModel = new OtherTableModel(other);
+			otherTable.setModel(otherModel);
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error: " + e1, "Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
 		
 	}
 }

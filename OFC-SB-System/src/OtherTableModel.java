@@ -7,17 +7,17 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-class SupplyTableModel extends AbstractTableModel
+class OtherTableModel extends AbstractTableModel
 {
 	public static final int OBJECT_COL = -1;
 	private static final int NAME_COL = 0;
 	private static final int AMOUNT_COL = 1;
 	private String[] columnNames = {"Name", "Amount"};
-	private List<Supply> supply;
+	private List<Other> other;
 	
-	public SupplyTableModel(List<Supply> theSupply)
+	public OtherTableModel(List<Other> theOther)
 	{
-		supply = theSupply;
+		other = theOther;
 	}
 	
 	@Override
@@ -29,7 +29,7 @@ class SupplyTableModel extends AbstractTableModel
 	@Override
 	public int getRowCount()
 	{
-		return supply.size();
+		return other.size();
 	}
 
 	@Override
@@ -41,16 +41,16 @@ class SupplyTableModel extends AbstractTableModel
 	@Override
 	public Object getValueAt(int row, int col)
 	{
-		Supply tempSupply = supply.get(row);
+		Other tempOther = other.get(row);
 
 		switch (col)
 		{
 		case NAME_COL:
-			return tempSupply.getName();
+			return tempOther.getName();
 		case AMOUNT_COL:
-			return tempSupply.getAmount();
+			return tempOther.getAmount();
 		default:
-			return tempSupply.getName();
+			return tempOther.getName();
 		}
 	}
 

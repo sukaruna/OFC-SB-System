@@ -56,6 +56,55 @@ public class ProductDAO
 		}
 	}
 	
+	public void addMenu(Menu theMenu) throws Exception
+	{
+		PreparedStatement myPpSt = null;
+		
+		try
+		{
+			myPpSt = myConn.prepareStatement("insert into Menu"
+					+ " (name, type, category, material, price, employee_price, sold)"
+					+ " values (?, ?, ?, ?, ?, ?, ?)");
+			
+			myPpSt.setString(1, theMenu.getName());
+			myPpSt.setString(2, theMenu.getType());
+			myPpSt.setString(3, theMenu.getCategory());
+			myPpSt.setString(4, theMenu.getMaterial());
+			myPpSt.setDouble(5, theMenu.getPrice());
+			myPpSt.setDouble(6, theMenu.getEmployeePrice());
+			myPpSt.setInt(7, theMenu.getSold());
+			
+			myPpSt.executeUpdate();
+		}
+		finally
+		{
+			close(myPpSt);
+		}
+	}
+	
+	public void addOther(Other theOther) throws Exception
+	{
+		PreparedStatement myPpSt = null;
+		
+		try
+		{
+			myPpSt = myConn.prepareStatement("insert into Other"
+					+ " (name, type, low_stock, amount)"
+					+ " values (?, ?, ?, ?)");
+			
+			myPpSt.setString(1, theOther.getName());
+			myPpSt.setString(2, theOther.getType());
+			myPpSt.setInt(3, theOther.getLowStock());
+			myPpSt.setInt(4, theOther.getAmount());
+			
+			myPpSt.executeUpdate();
+		}
+		finally
+		{
+			close(myPpSt);
+		}
+	}
+	
 	public List<Supply> getAllSupplies() throws Exception
 	{
 		List<Supply> list = new ArrayList<>();
@@ -118,7 +167,7 @@ public class ProductDAO
 		try
 		{
 			mySt = myConn.createStatement();
-			myRs = mySt.executeQuery("select * from Supply");
+			myRs = mySt.executeQuery("select * from Other");
 			
 			while(myRs.next())
 			{
@@ -131,6 +180,22 @@ public class ProductDAO
 		finally
 		{
 			close(mySt, myRs);
+		}
+	}
+	
+	public void deleteProduct(String type, int id) throws SQLException
+	{
+		PreparedStatement myPpSt = null;
+		
+		try
+		{
+			myPpSt = myConn.prepareStatement("delete from " + type + " where id=?");
+			myPpSt.setInt(1, id);
+			myPpSt.executeUpdate();
+		}
+		finally
+		{
+			close(myPpSt);
 		}
 	}
 	
