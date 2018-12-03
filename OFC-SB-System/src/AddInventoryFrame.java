@@ -17,14 +17,33 @@ import javax.swing.SwingConstants;
 
 public class AddInventoryFrame extends JFrame implements ActionListener
 {
+	private ProductDAO dao;
+	private Other other;
+	private Supply supply;
 	private JFrame addInventoryFrame;
 	private JPanel addInventoryPanel;
-	private JLabel nameLabel, scaleLabel, colonLabel, amountLabel, exDateLabel, slash1Label, slash2Label;
-	private JTextField largeUnitTF, smallUnitTF, amountTF, yearTF, monthTF, dayTF;
+	private JLabel nameLabel, actualNameLabel, scaleLabel, colonLabel, amountLabel, exDateLabel, slash1Label, slash2Label, largeUnitLabel;
+	private JTextField smallUnitTF, amountTF, yearTF, monthTF, dayTF;
 	private JButton add12Btn, add16Btn, add24Btn, add25Btn, addBtn, cancelBtn;
+	
+	public AddInventoryFrame(Supply theSupply, Other theOther)
+	{
+		this();
+		supply = theSupply;
+		other = theOther;
+	}
 	
 	public AddInventoryFrame()
 	{
+		try
+		{
+			dao = new ProductDAO();
+		}
+		catch (Exception e2)
+		{
+			e2.printStackTrace();
+		}
+		
 		addInventoryFrame = new JFrame("Add Inventory");
 		addInventoryFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		addInventoryFrame.setPreferredSize(new Dimension(650,500));
@@ -36,7 +55,19 @@ public class AddInventoryFrame extends JFrame implements ActionListener
 		
 		nameLabel = new JLabel("Product Name:");
 		nameLabel.setBounds(20, 20, 100, 33);
+		if(other == null)
+		{
+			nameLabel.setText(supply.getName());
+		}
+		else
+		{
+			nameLabel.setText(other.getName());
+		}
 		addInventoryPanel.add(nameLabel);
+		
+		actualNameLabel = new JLabel();
+		actualNameLabel.setBounds(200, 20, 100, 33);
+		addInventoryPanel.add(actualNameLabel);
 		
 		scaleLabel = new JLabel("Large Unit : Small Unit");
 		scaleLabel.setBounds(20, 70, 140, 33);
@@ -62,9 +93,9 @@ public class AddInventoryFrame extends JFrame implements ActionListener
 		slash2Label.setBounds(333, 170, 10, 33);
 		addInventoryPanel.add(slash2Label);
 		
-		largeUnitTF = new JTextField("1");
-		largeUnitTF.setBounds(200, 70, 60, 33);
-		addInventoryPanel.add(largeUnitTF);
+		largeUnitLabel = new JLabel("1");
+		largeUnitLabel.setBounds(200, 70, 60, 33);
+		addInventoryPanel.add(largeUnitLabel);
 		
 		smallUnitTF = new JTextField("1");
 		smallUnitTF.setBounds(271, 70, 60, 33);
@@ -156,6 +187,8 @@ public class AddInventoryFrame extends JFrame implements ActionListener
 		
 		if(e.getSource() == addBtn)
 		{
+			//need to add the original amount which is from the database, develop search product function first probably
+			int amount = Integer.parseInt(smallUnitTF.getText()) * Integer.parseInt(amountTF.getText());
 			
 		}
 		

@@ -11,8 +11,10 @@ class SupplyTableModel extends AbstractTableModel
 {
 	public static final int OBJECT_COL = -1;
 	private static final int NAME_COL = 0;
-	private static final int AMOUNT_COL = 1;
-	private String[] columnNames = {"Name", "Amount"};
+	private static final int LOW_STOCK_COL = 1;
+	private static final int AMOUNT_COL = 2;
+	private static final int EXDATE_COL = 3;
+	private String[] columnNames = {"Name", "Low-stock", "Amount", "Expiration date"};
 	private List<Supply> supply;
 	
 	public SupplyTableModel(List<Supply> theSupply)
@@ -47,8 +49,12 @@ class SupplyTableModel extends AbstractTableModel
 		{
 		case NAME_COL:
 			return tempSupply.getName();
+		case LOW_STOCK_COL:
+			return tempSupply.getLowStock();
 		case AMOUNT_COL:
 			return tempSupply.getAmount();
+		case EXDATE_COL:
+			return tempSupply.getClosestExDate();
 		default:
 			return tempSupply.getName();
 		}

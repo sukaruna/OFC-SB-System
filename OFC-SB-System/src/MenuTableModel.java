@@ -11,8 +11,11 @@ class MenuTableModel extends AbstractTableModel
 {
 	public static final int OBJECT_COL = -1;
 	private static final int NAME_COL = 0;
-	private static final int PRICE_COL = 1;
-	private String[] columnNames = {"Name", "Price"};
+	private static final int CATEGORY_COL = 1;
+	private static final int PRICE_COL = 2;
+	private static final int EMPRICE_COL = 3;
+	private static final int SOLD_COL = 4;
+	private String[] columnNames = {"Name", "Category", "Price", "Employee price", "Sold today"};
 	private List<Menu> menu;
 	
 	public MenuTableModel(List<Menu> theMenu)
@@ -47,8 +50,14 @@ class MenuTableModel extends AbstractTableModel
 		{
 		case NAME_COL:
 			return tempMenu.getName();
+		case CATEGORY_COL:
+			return tempMenu.getCategory();
 		case PRICE_COL:
 			return tempMenu.getPrice();
+		case EMPRICE_COL:
+			return tempMenu.getEmployeePrice();
+		case SOLD_COL:
+			return tempMenu.getSold();
 		default:
 			return tempMenu.getName();
 		}

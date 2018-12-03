@@ -20,6 +20,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class InventoryPanel implements ActionListener
 {
 	private ProductDAO dao;
+	DefaultTableCellRenderer dtcr;
 	private JScrollPane supplyPane, menuPane, otherPane;
 	private JTable supplyTable, menuTable, otherTable;
 	private JTextField searchTF;
@@ -28,7 +29,7 @@ public class InventoryPanel implements ActionListener
 	private String card = "Supply";
 	
 	//constructor
-	public InventoryPanel() throws Exception
+	public InventoryPanel()
 	{	
 		try
 		{
@@ -48,7 +49,7 @@ public class InventoryPanel implements ActionListener
 		switchPanel.setBounds(10, 70, 500, 350);
 		inventoryPanel.add(switchPanel);
 		
-		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalTextPosition(DefaultTableCellRenderer.CENTER);
 		
 		supplyTable = new JTable();
@@ -224,14 +225,49 @@ public class InventoryPanel implements ActionListener
 		
 		if(e.getSource() == addInventoryBtn)
 		{
-			//create a new frame to add inventory
-			new AddInventoryFrame();
+			try
+			{
+				int row = -1;
+				if(card.compareTo("Supply") == 0)
+				{
+					row = supplyTable.getSelectedRow();
+				}
+				else if(card.compareTo("Other") == 0)
+				{
+					row = otherTable.getSelectedRow();
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(MainFrame.overallFrame, "You must select a product from Supply or Other", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				
+				if(row < 0)
+				{
+					JOptionPane.showMessageDialog(MainFrame.overallFrame, "You must select a product", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				if(card.compareTo("Supply") == 0)
+				{
+					Supply temp = dao.getAllSupplies().get(row);
+					new AddInventoryFrame(temp, null);
+				}
+				else
+				{
+					Other temp = dao.getAllOthers().get(row);
+					new AddInventoryFrame(null, temp);
+				}
+			}
+			catch(Exception e1)
+			{
+				
+			}
 		}
 		
 		if(e.getSource() == addProductBtn)
 		{
 			//create a new frame to add new products
-			new AddProductFrame();
+			new AddProductFrame(this);
 		}
 		
 		if(e.getSource() == editBtn)
@@ -248,7 +284,7 @@ public class InventoryPanel implements ActionListener
 		{
 			try
 			{
-				int row;
+				int row = -1;
 				if(card.compareTo("Supply") == 0)
 				{
 					row = supplyTable.getSelectedRow();
@@ -277,44 +313,58 @@ public class InventoryPanel implements ActionListener
 				
 				if(card.compareTo("Supply") == 0)
 				{
-					Supply temp = (Supply) supplyTable.getValueAt(row, SupplyTableModel.OBJECT_COL);
-					dao.deleteProduct("Supply", temp.getID());
+					//cannot convet to Supply because the information in SupplyTableModel is not complete yet.
+					//maybe can call the list of Supply in SupplyTableModel and choose that one.
+					List<Supply> temp = dao.getAllSupplies();
+					dao.deleteProduct("Supply", temp.get(row).getID());
 				}
 				else if(card.compareTo("Menu") == 0)
 				{
-					Menu temp = (Menu) menuTable.getValueAt(row, MenuTableModel.OBJECT_COL);
-					dao.deleteProduct("Menu", temp.getID());
+					List<Menu> temp = dao.getAllMenus();
+					dao.deleteProduct("Menu", temp.get(row).getID());
 				}
 				else
 				{
-					Other temp = (Other) otherTable.getValueAt(row, OtherTableModel.OBJECT_COL);
-					dao.deleteProduct("Other", temp.getID());
+					List<Other> temp = dao.getAllOthers();
+					dao.deleteProduct("Other", temp.get(row).getID());
 				}
-				
-				JOptionPane.showMessageDialog(MainFrame.overallFrame, "Employee deleted succesfully.", "Employee Deleted", JOptionPane.INFORMATION_MESSAGE);
+				refreshProductView();
+				JOptionPane.showMessageDialog(MainFrame.overallFrame, "Product deleted succesfully.", "Product Deleted", JOptionPane.INFORMATION_MESSAGE);
 			}
 			catch (Exception e1) 
 			{
-				JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error deleting employee: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error deleting product: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
 	
-	public void refreshEmployeesView()
+	public void refreshProductView()
 	{
 		try
 		{
 			List<Supply> supply = dao.getAllSupplies();
 			SupplyTableModel supplyModel = new SupplyTableModel(supply);
 			supplyTable.setModel(supplyModel);
+			for(int i = 0; i < supplyTable.getColumnCount(); i++)
+			{
+				supplyTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
+			}
 			
 			List<Menu> menu = dao.getAllMenus();
 			MenuTableModel menuModel = new MenuTableModel(menu);
 			menuTable.setModel(menuModel);
+			for(int i = 0; i < menuTable.getColumnCount(); i++)
+			{
+				menuTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
+			}
 			
 			List<Other> other = dao.getAllOthers();
 			OtherTableModel otherModel = new OtherTableModel(other);
 			otherTable.setModel(otherModel);
+			for(int i = 0; i < otherTable.getColumnCount(); i++)
+			{
+				otherTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
+			}
 		} catch (Exception e1) {
 			JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error: " + e1, "Error",
 					JOptionPane.ERROR_MESSAGE);

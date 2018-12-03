@@ -38,9 +38,7 @@ public class ProductDAO
 		
 		try
 		{
-			myPpSt = myConn.prepareStatement("insert into Supply"
-					+ " (name, type, low_stock, amount, expiration_dates)"
-					+ " values (?, ?, ?, ?, ?)");
+			myPpSt = myConn.prepareStatement("INSERT INTO Supply (name, type, low_stock, amount, expiration_dates) VALUES (?, ?, ?, ?, ?)");
 			
 			myPpSt.setString(1, theSupply.getName());
 			myPpSt.setString(2, theSupply.getType());
@@ -62,9 +60,7 @@ public class ProductDAO
 		
 		try
 		{
-			myPpSt = myConn.prepareStatement("insert into Menu"
-					+ " (name, type, category, material, price, employee_price, sold)"
-					+ " values (?, ?, ?, ?, ?, ?, ?)");
+			myPpSt = myConn.prepareStatement("INSERT INTO Menu (name, type, category, material, price, employee_price, sold) VALUES (?, ?, ?, ?, ?, ?, ?)");
 			
 			myPpSt.setString(1, theMenu.getName());
 			myPpSt.setString(2, theMenu.getType());
@@ -88,9 +84,7 @@ public class ProductDAO
 		
 		try
 		{
-			myPpSt = myConn.prepareStatement("insert into Other"
-					+ " (name, type, low_stock, amount)"
-					+ " values (?, ?, ?, ?)");
+			myPpSt = myConn.prepareStatement("INSERT INTO Other (name, type, low_stock, amount) VALUES (?, ?, ?, ?)");
 			
 			myPpSt.setString(1, theOther.getName());
 			myPpSt.setString(2, theOther.getType());
@@ -115,7 +109,7 @@ public class ProductDAO
 		try
 		{
 			mySt = myConn.createStatement();
-			myRs = mySt.executeQuery("select * from Supply");
+			myRs = mySt.executeQuery("SELECT * FROM Supply");
 			
 			while(myRs.next())
 			{
@@ -141,7 +135,7 @@ public class ProductDAO
 		try
 		{
 			mySt = myConn.createStatement();
-			myRs = mySt.executeQuery("select * from Menu");
+			myRs = mySt.executeQuery("SELECT * FROM Menu");
 			
 			while(myRs.next())
 			{
@@ -167,7 +161,7 @@ public class ProductDAO
 		try
 		{
 			mySt = myConn.createStatement();
-			myRs = mySt.executeQuery("select * from Other");
+			myRs = mySt.executeQuery("SELECT * FROM Other");
 			
 			while(myRs.next())
 			{
@@ -183,19 +177,56 @@ public class ProductDAO
 		}
 	}
 	
-	public void deleteProduct(String type, int id) throws SQLException
+	public String[] getSupplyNames() throws Exception
 	{
-		PreparedStatement myPpSt = null;
+		List<String> list = new ArrayList<>();
+		list.add("");
+		
+		Statement mySt = null;
+		ResultSet myRs = null;
 		
 		try
 		{
-			myPpSt = myConn.prepareStatement("delete from " + type + " where id=?");
+			mySt = myConn.createStatement();
+			myRs = mySt.executeQuery("SELECT * FROM Supply");
+			
+			while(myRs.next())
+			{
+				Other temp = convertRowToOther(myRs);
+				list.add(temp.getName());
+			}
+			
+			String[] names = new String[list.size()];
+			names = list.toArray(names);
+			
+			return names;
+		}
+		finally
+		{
+			close(mySt, myRs);
+		}
+	}
+	
+	public void deleteProduct(String type, int id) throws SQLException
+	{
+		PreparedStatement myPpSt = null;
+		Statement mySt = null;
+		
+		
+		try
+		{
+			myPpSt = myConn.prepareStatement("DELETE FROM " + type + " WHERE id=?");
 			myPpSt.setInt(1, id);
 			myPpSt.executeUpdate();
+			
+			mySt = myConn.createStatement();
+			mySt.execute("ALTER TABLE " + type + " DROP id");
+			mySt.execute("ALTER TABLE " + type + " ADD id INT NOT NULL AUTO_INCREMENT PRIMARY KEY");
 		}
 		finally
 		{
 			close(myPpSt);
+			close(mySt);
 		}
 	}
 	
@@ -208,7 +239,7 @@ public class ProductDAO
 		try
 		{
 			mySt = myConn.createStatement();
-			myRs = mySt.executeQuery("select * from " + type);
+			myRs = mySt.executeQuery("SELECT * FROM " + type);
 			
 			while(myRs.next())
 			{

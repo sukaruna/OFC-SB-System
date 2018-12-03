@@ -11,8 +11,9 @@ class OtherTableModel extends AbstractTableModel
 {
 	public static final int OBJECT_COL = -1;
 	private static final int NAME_COL = 0;
-	private static final int AMOUNT_COL = 1;
-	private String[] columnNames = {"Name", "Amount"};
+	private static final int LOW_STOCK_COL = 1;
+	private static final int AMOUNT_COL = 2;
+	private String[] columnNames = {"Name", "Low-stock", "Amount"};
 	private List<Other> other;
 	
 	public OtherTableModel(List<Other> theOther)
@@ -47,6 +48,8 @@ class OtherTableModel extends AbstractTableModel
 		{
 		case NAME_COL:
 			return tempOther.getName();
+		case LOW_STOCK_COL:
+			return tempOther.getLowStock();
 		case AMOUNT_COL:
 			return tempOther.getAmount();
 		default:

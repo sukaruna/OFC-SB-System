@@ -14,9 +14,9 @@ public class Other extends Product
 		setAmount(a);
 	}
 	
-	public Other(int id, String n, String t, int ls)
+	public Other(String n, String t, int ls)
 	{
-		this(id, n, t, ls, 0);
+		this(0, n, t, ls, 0);
 	}
 	
 	public void setLowStock(int ls)
