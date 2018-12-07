@@ -19,6 +19,11 @@ public class Other extends Product
 		this(0, n, t, ls, 0);
 	}
 	
+	public void addAmount(int a)
+	{
+		amount += a;
+	}
+	
 	public void setLowStock(int ls)
 	{
 		lowStock = ls;

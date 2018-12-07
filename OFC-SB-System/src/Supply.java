@@ -26,12 +26,9 @@ public class Supply extends Product
 		amount += a;
 	}
 	
-	public void addExDate(int y, int m, int d)
+	public void addExDate(String exdate)
 	{
-		if(y != 0 && m != 0 && d != 0)
-		{
-			exDates += y + " " + m + " " + d + "&";
-		}
+		exDates += exdate;
 	}
 	
 	public boolean checkExpiration(int y, int m, int d)

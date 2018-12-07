@@ -4,19 +4,24 @@
  */
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 public class AddInventoryFrame extends JFrame implements ActionListener
 {
+	private InventoryPanel inventoryPanel;
 	private ProductDAO dao;
 	private Other other;
 	private Supply supply;
@@ -26,23 +31,12 @@ public class AddInventoryFrame extends JFrame implements ActionListener
 	private JTextField smallUnitTF, amountTF, yearTF, monthTF, dayTF;
 	private JButton add12Btn, add16Btn, add24Btn, add25Btn, addBtn, cancelBtn;
 	
-	public AddInventoryFrame(Supply theSupply, Other theOther)
+	public AddInventoryFrame(InventoryPanel thePanel, ProductDAO theDAO, Supply theSupply, Other theOther)
 	{
-		this();
+		inventoryPanel = thePanel;
+		dao = theDAO;
 		supply = theSupply;
 		other = theOther;
-	}
-	
-	public AddInventoryFrame()
-	{
-		try
-		{
-			dao = new ProductDAO();
-		}
-		catch (Exception e2)
-		{
-			e2.printStackTrace();
-		}
 		
 		addInventoryFrame = new JFrame("Add Inventory");
 		addInventoryFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -55,18 +49,18 @@ public class AddInventoryFrame extends JFrame implements ActionListener
 		
 		nameLabel = new JLabel("Product Name:");
 		nameLabel.setBounds(20, 20, 100, 33);
-		if(other == null)
-		{
-			nameLabel.setText(supply.getName());
-		}
-		else
-		{
-			nameLabel.setText(other.getName());
-		}
 		addInventoryPanel.add(nameLabel);
 		
 		actualNameLabel = new JLabel();
 		actualNameLabel.setBounds(200, 20, 100, 33);
+		if(other == null)
+		{
+			actualNameLabel.setText(supply.getName());
+		}
+		else
+		{
+			actualNameLabel.setText(other.getName());
+		}
 		addInventoryPanel.add(actualNameLabel);
 		
 		scaleLabel = new JLabel("Large Unit : Small Unit");
@@ -119,6 +113,13 @@ public class AddInventoryFrame extends JFrame implements ActionListener
 		dayTF.setBounds(340, 170, 40, 33);
 		dayTF.setHorizontalAlignment(SwingConstants.RIGHT);
 		addInventoryPanel.add(dayTF);
+		
+		if(supply == null)
+		{
+			setDisabled(yearTF);
+			setDisabled(monthTF);
+			setDisabled(dayTF);
+		}
 		
 		add12Btn = new JButton("+12");
 		add12Btn.setBounds(280, 120, 60, 33);
@@ -187,14 +188,53 @@ public class AddInventoryFrame extends JFrame implements ActionListener
 		
 		if(e.getSource() == addBtn)
 		{
-			//need to add the original amount which is from the database, develop search product function first probably
-			int amount = Integer.parseInt(smallUnitTF.getText()) * Integer.parseInt(amountTF.getText());
-			
+			int amount = 0;
+			String exDate = "";
+			if(other == null)
+			{
+				amount = Integer.parseInt(smallUnitTF.getText()) * Integer.parseInt(amountTF.getText());
+				exDate = yearTF.getText() + " " + monthTF.getText() + " " + dayTF.getText() + "&";
+				supply.addAmount(amount);
+				supply.addExDate(exDate);
+				
+				try
+				{
+					dao.updateSupply(supply);
+					addInventoryFrame.dispose();
+					inventoryPanel.refreshProductView();
+				}
+				catch (SQLException e1)
+				{
+					JOptionPane.showMessageDialog(this, "Error adding inventory: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			else
+			{
+				amount = Integer.parseInt(smallUnitTF.getText()) * Integer.parseInt(amountTF.getText()) + other.getAmount();
+				other.addAmount(amount);
+				
+				try
+				{
+					dao.updateOther(other);
+					addInventoryFrame.dispose();
+					inventoryPanel.refreshProductView();
+				}
+				catch (SQLException e1)
+				{
+					JOptionPane.showMessageDialog(this, "Error adding inventory: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
 		}
 		
 		if(e.getSource() == cancelBtn)
 		{
 			addInventoryFrame.dispose();
 		}
+	}
+	
+	private void setDisabled(JComponent jc)
+	{
+		jc.setEnabled(false);
+		jc.setBackground(Color.LIGHT_GRAY);
 	}
 }

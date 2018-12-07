@@ -34,22 +34,10 @@ public class AddProductFrame extends JFrame implements ActionListener
 	private JTextField nameTF, priceTF, emPriceTF, lowStockTF;
 	private JComboBox<String> typeCB, categoryCB;
 	
-	public AddProductFrame(InventoryPanel tempPanel)
+	public AddProductFrame(InventoryPanel thePanel, ProductDAO theDAO)
 	{
-		this();
-		inventoryPanel = tempPanel;
-	}
-	
-	public AddProductFrame()
-	{
-		try
-		{
-			dao = new ProductDAO();
-		}
-		catch (Exception e2)
-		{
-			e2.printStackTrace();
-		}
+		inventoryPanel = thePanel;
+		dao = theDAO;
 		
 		int supplyNum = 0;
 		try

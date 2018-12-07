@@ -239,6 +239,7 @@ public class InventoryPanel implements ActionListener
 				else
 				{
 					JOptionPane.showMessageDialog(MainFrame.overallFrame, "You must select a product from Supply or Other", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
 				}
 				
 				if(row < 0)
@@ -250,24 +251,24 @@ public class InventoryPanel implements ActionListener
 				if(card.compareTo("Supply") == 0)
 				{
 					Supply temp = dao.getAllSupplies().get(row);
-					new AddInventoryFrame(temp, null);
+					new AddInventoryFrame(this, dao, temp, null);
 				}
 				else
 				{
 					Other temp = dao.getAllOthers().get(row);
-					new AddInventoryFrame(null, temp);
+					new AddInventoryFrame(this, dao, null, temp);
 				}
 			}
 			catch(Exception e1)
 			{
-				
+				e1.printStackTrace();;
 			}
 		}
 		
 		if(e.getSource() == addProductBtn)
 		{
 			//create a new frame to add new products
-			new AddProductFrame(this);
+			new AddProductFrame(this, dao);
 		}
 		
 		if(e.getSource() == editBtn)
@@ -277,7 +278,51 @@ public class InventoryPanel implements ActionListener
 		
 		if(e.getSource() == searchBtn)
 		{
-			
+			String name = searchTF.getText();
+			if(name.compareTo("") == 0)
+			{
+				refreshProductView();
+			}
+			else
+			{
+				try
+				{
+					if(card.compareTo("Supply") == 0)
+					{
+						List<Supply> temp = dao.searchSupply(name);
+						SupplyTableModel supplyModel = new SupplyTableModel(temp);
+						supplyTable.setModel(supplyModel);
+						for(int i = 0; i < supplyTable.getColumnCount(); i++)
+						{
+							supplyTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
+						}
+					}
+					else if(card.compareTo("Menu") == 0)
+					{
+						List<Menu> temp = dao.getAllMenus();
+						MenuTableModel menuModel = new MenuTableModel(temp);
+						menuTable.setModel(menuModel);
+						for(int i = 0; i < menuTable.getColumnCount(); i++)
+						{
+							menuTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
+						}
+					}
+					else
+					{
+						List<Other> temp = dao.searchOther(name);
+						OtherTableModel otherModel = new OtherTableModel(temp);
+						otherTable.setModel(otherModel);
+						for(int i = 0; i < otherTable.getColumnCount(); i++)
+						{
+							otherTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
+						}
+					}
+				}
+				catch(Exception e1)
+				{
+					
+				}
+			}
 		}
 		
 		if(e.getSource() == deleteBtn)
