@@ -284,7 +284,7 @@ public class ProductDAO
 		try
 		{
 			mySt = myConn.createStatement();
-			myRs = mySt.executeQuery("SELECT * FROM Supply WHERE amount > low_stock");
+			myRs = mySt.executeQuery("SELECT * FROM Supply WHERE amount < low_stock");
 			
 			while(myRs.next())
 			{
@@ -310,7 +310,7 @@ public class ProductDAO
 		try
 		{
 			mySt = myConn.createStatement();
-			myRs = mySt.executeQuery("SELECT * FROM Other WHERE amount > low_stock");
+			myRs = mySt.executeQuery("SELECT * FROM Other WHERE amount < low_stock");
 			
 			while(myRs.next())
 			{

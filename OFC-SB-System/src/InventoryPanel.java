@@ -220,7 +220,7 @@ public class InventoryPanel implements ActionListener
 		
 		if(e.getSource() == lowStockBtn)
 		{
-			new LowStockFrame();
+			new LowStockFrame(dao);
 		}
 		
 		if(e.getSource() == addInventoryBtn)
@@ -299,7 +299,7 @@ public class InventoryPanel implements ActionListener
 					}
 					else if(card.compareTo("Menu") == 0)
 					{
-						List<Menu> temp = dao.getAllMenus();
+						List<Menu> temp = dao.searchMenu(name);
 						MenuTableModel menuModel = new MenuTableModel(temp);
 						menuTable.setModel(menuModel);
 						for(int i = 0; i < menuTable.getColumnCount(); i++)
