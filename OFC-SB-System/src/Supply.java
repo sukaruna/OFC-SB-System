@@ -3,6 +3,13 @@
  * Date: 2018.11.06
  */
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 public class Supply extends Product
 {
 	private int lowStock, amount;
@@ -31,42 +38,34 @@ public class Supply extends Product
 		exDates += exdate;
 	}
 	
-	public boolean checkExpiration(int y, int m, int d)
+	public boolean checkCloseToExpiration() throws ParseException
 	{
-		String[] date = exDates.substring(exDates.indexOf("&")).split("\\s+");
-		int year = Integer.parseInt(date[0]);
-		int month = Integer.parseInt(date[1]);
-		int day = Integer.parseInt(date[2]);
-		
-		if(y == year)
-		{
-			if(m == month)
-			{
-				if(d > day)
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else if(m < month)
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-		}
-		else if(y < year)
+		if(exDates.compareTo("") == 0)
 		{
 			return false;
 		}
 		else
 		{
-			return true;
+			SimpleDateFormat myFormat = new SimpleDateFormat("yyyy MM dd");
+			String string1 = exDates.substring(0, exDates.indexOf("&"));
+			
+			LocalDate localDate = LocalDate.now();
+			String string2 = DateTimeFormatter.ofPattern("yyyy MM dd").format(localDate);
+			
+			Date date1 = myFormat.parse(string1);
+			Date date2 = myFormat.parse(string2);
+			long diff = date1.getTime() - date2.getTime();
+			int days = (int) (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + 1);
+			System.out.println(days);
+			
+			if(days <= 13)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 	}
 	

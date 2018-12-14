@@ -4,7 +4,6 @@
  */
 
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -61,7 +60,7 @@ public class InventoryPanel implements ActionListener
 		}
 		catch(Exception e1)
 		{
-			e1.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error creating table: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		for(int i = 0; i < supplyTable.getColumnCount(); i++)
 		{
@@ -77,7 +76,7 @@ public class InventoryPanel implements ActionListener
 		}
 		catch(Exception e1)
 		{
-			e1.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error creating table: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		for(int i = 0; i < menuTable.getColumnCount(); i++)
 		{
@@ -190,6 +189,8 @@ public class InventoryPanel implements ActionListener
 			CardLayout cardLayout = (CardLayout) switchPanel.getLayout();
 			cardLayout.show(switchPanel, "Supply");
 			card = "Supply";
+			menuTable.getSelectionModel().clearSelection();
+			otherTable.getSelectionModel().clearSelection();
 		}
 		
 		if(e.getSource() == menuBtn)
@@ -197,6 +198,8 @@ public class InventoryPanel implements ActionListener
 			CardLayout cardLayout = (CardLayout) switchPanel.getLayout();
 			cardLayout.show(switchPanel, "Menu");
 			card = "Menu";
+			supplyTable.getSelectionModel().clearSelection();
+			otherTable.getSelectionModel().clearSelection();
 		}
 		
 		if(e.getSource() == otherBtn)
@@ -204,6 +207,8 @@ public class InventoryPanel implements ActionListener
 			CardLayout cardLayout = (CardLayout) switchPanel.getLayout();
 			cardLayout.show(switchPanel, "Other");
 			card = "Other";
+			supplyTable.getSelectionModel().clearSelection();
+			menuTable.getSelectionModel().clearSelection();
 		}
 		
 		if(e.getSource() == homeBtn)
@@ -215,7 +220,7 @@ public class InventoryPanel implements ActionListener
 
 		if(e.getSource() == expirationBtn)
 		{
-			new ExpirationFrame();
+			new ExpirationFrame(dao);
 		}
 		
 		if(e.getSource() == lowStockBtn)
@@ -273,7 +278,45 @@ public class InventoryPanel implements ActionListener
 		
 		if(e.getSource() == editBtn)
 		{
-			
+			try
+			{
+				int row = -1;
+				if(card.compareTo("Supply") == 0)
+				{
+					row = supplyTable.getSelectedRow();
+				}
+				else if(card.compareTo("Menu") == 0)
+				{
+					row = menuTable.getSelectedRow();
+				}
+				else
+				{
+					row = otherTable.getSelectedRow();
+				}
+				
+				if(row < 0)
+				{
+					JOptionPane.showMessageDialog(MainFrame.overallFrame, "You must select a product", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				if(card.compareTo("Supply") == 0)
+				{
+					new AddProductFrame(this, dao, true, dao.getAllSupplies().get(row), null, null);
+				}
+				else if(card.compareTo("Menu") == 0)
+				{
+					new AddProductFrame(this, dao, true, null, dao.getAllMenus().get(row), null);
+				}
+				else
+				{
+					new AddProductFrame(this, dao, true, null, null, dao.getAllOthers().get(row));
+				}
+			}
+			catch (Exception e1) 
+			{
+				JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error deleting product: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 		
 		if(e.getSource() == searchBtn)
@@ -358,8 +401,6 @@ public class InventoryPanel implements ActionListener
 				
 				if(card.compareTo("Supply") == 0)
 				{
-					//cannot convet to Supply because the information in SupplyTableModel is not complete yet.
-					//maybe can call the list of Supply in SupplyTableModel and choose that one.
 					List<Supply> temp = dao.getAllSupplies();
 					dao.deleteProduct("Supply", temp.get(row).getID());
 				}

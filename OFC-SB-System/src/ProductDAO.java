@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -127,7 +128,7 @@ public class ProductDAO
 		
 		try
 		{
-			myPpSt = myConn.prepareStatement("UPDATE Supply SET name=?, category=?, material=?, price=?, employee_price=?, sold=? WHERE id=?");
+			myPpSt = myConn.prepareStatement("UPDATE Menu SET name=?, category=?, material=?, price=?, employee_price=?, sold=? WHERE id=?");
 			
 			myPpSt.setString(1, theMenu.getName());
 			myPpSt.setString(2, theMenu.getCategory());
@@ -151,7 +152,7 @@ public class ProductDAO
 		
 		try
 		{
-			myPpSt = myConn.prepareStatement("UPDATE Supply SET name=?, low_stock=?, amount=? WHERE id=?");
+			myPpSt = myConn.prepareStatement("UPDATE Other SET name=?, low_stock=?, amount=? WHERE id=?");
 			
 			myPpSt.setString(1, theOther.getName());
 			myPpSt.setInt(2, theOther.getLowStock());
@@ -416,6 +417,35 @@ public class ProductDAO
 		}
 	}
 	
+	public List<Supply> getCloseToExpirationSupplies() throws SQLException, ParseException
+	{
+		List<Supply> list = new ArrayList<>();
+		
+		Statement mySt = null;
+		ResultSet myRs = null;
+		
+		try
+		{
+			mySt = myConn.createStatement();
+			myRs = mySt.executeQuery("SELECT * FROM Supply");
+			
+			while(myRs.next())
+			{
+				Supply temp = convertRowToSupply(myRs);
+				if(temp.checkCloseToExpiration())
+				{
+					list.add(temp);
+				}
+			}
+			
+			return list;
+		}
+		finally
+		{
+			close(mySt, myRs);
+		}
+	}
+	
 	public void decreaseInventory(Menu theMenu) throws SQLException
 	{
 		PreparedStatement myPpSt = null;
@@ -484,6 +514,58 @@ public class ProductDAO
 		}
 	}
 	
+	public List<Record> getAllEditPriceRecord() throws SQLException
+	{
+		List<Record> list = new ArrayList<>();
+		
+		Statement mySt = null;
+		ResultSet myRs = null;
+		
+		try
+		{
+			mySt = myConn.createStatement();
+			myRs = mySt.executeQuery("SELECT * FROM Record WHERE type='Edit Price'");
+			
+			while(myRs.next())
+			{
+				Record temp = convertRowToRecord(myRs);
+				list.add(temp);
+			}
+			
+			return list;
+		}
+		finally
+		{
+			close(mySt, myRs);
+		}
+	}
+	
+	public List<Record> getAllDeleteInventoryRecord() throws SQLException
+	{
+		List<Record> list = new ArrayList<>();
+		
+		Statement mySt = null;
+		ResultSet myRs = null;
+		
+		try
+		{
+			mySt = myConn.createStatement();
+			myRs = mySt.executeQuery("SELECT * FROM Record WHERE type='Delete Inventory'");
+			
+			while(myRs.next())
+			{
+				Record temp = convertRowToRecord(myRs);
+				list.add(temp);
+			}
+			
+			return list;
+		}
+		finally
+		{
+			close(mySt, myRs);
+		}
+	}
+	
 	private Supply convertRowToSupply(ResultSet myRs) throws SQLException
 	{
 		int id = myRs.getInt("id");
@@ -522,6 +604,22 @@ public class ProductDAO
 		
 		Other tempOther = new Other(id, name, type, lowStock, amount);
 		return tempOther;
+	}
+	
+	private Record convertRowToRecord(ResultSet myRs) throws SQLException
+	{
+		int id = myRs.getInt("id");
+		String type = myRs.getString("type");
+		String menuItem = myRs.getString("menu_item");
+		String supplyItem = myRs.getString("supply_item");
+		String date = myRs.getString("date");
+		double editedPrice = myRs.getDouble("edited_price");
+		double originalPrice = myRs.getDouble("original_price");
+		String reason = myRs.getString("reason");
+		int amount = myRs.getInt("amount");
+		
+		Record tempRecord = new Record(id, type, menuItem, date, editedPrice, originalPrice, supplyItem, reason, amount);
+		return tempRecord;
 	}
 	
 	private void close(Connection myConn, Statement mySt, ResultSet myRs) throws SQLException

@@ -9,6 +9,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,6 +25,10 @@ public class AddProductFrame extends JFrame implements ActionListener
 {
 	private ProductDAO dao;
 	private InventoryPanel inventoryPanel;
+	private boolean editMode = false;
+	private Supply supply;
+	private Menu menu;
+	private Other other;
 	private String type = "";
 	private int count = 0;
 	@SuppressWarnings("rawtypes")
@@ -30,14 +36,18 @@ public class AddProductFrame extends JFrame implements ActionListener
 	private JFrame addProductFrame;
 	private JPanel addProductPanel, comboPanel;
 	private JButton addCBBtn, addBtn, cancelBtn;
-	private JLabel nameLabel, typeLabel, categoryLabel, priceLabel, emPriceLabel, lowStockLabel, materialLabel;
-	private JTextField nameTF, priceTF, emPriceTF, lowStockTF;
-	private JComboBox<String> typeCB, categoryCB;
+	private JLabel nameLabel, typeLabel, categoryLabel, priceLabel, emPriceLabel, lowStockLabel, materialLabel, amountLabel;
+	private JTextField nameTF, priceTF, emPriceTF, lowStockTF, amountTF;
+	private JComboBox<String> categoryCB, typeCB;
 	
-	public AddProductFrame(InventoryPanel thePanel, ProductDAO theDAO)
+	public AddProductFrame(InventoryPanel thePanel, ProductDAO theDAO, boolean theEditMode, Supply theSupply, Menu theMenu, Other theOther)
 	{
 		inventoryPanel = thePanel;
 		dao = theDAO;
+		editMode = theEditMode;
+		supply = theSupply;
+		menu = theMenu;
+		other = theOther;
 		
 		int supplyNum = 0;
 		try
@@ -70,7 +80,7 @@ public class AddProductFrame extends JFrame implements ActionListener
 		
 		comboPanel = new JPanel();
 		comboPanel.setLayout(new GridLayout(3, 3, 5, 5));
-		comboPanel.setBounds(150, 270, 450, 150);
+		comboPanel.setBounds(150, 270, 450, 90);
 		for(int i = 0; i < materialCB.length; i++)
 		{
 			materialCB[i] = new JComboBox<String>(supplyList);
@@ -122,6 +132,12 @@ public class AddProductFrame extends JFrame implements ActionListener
 		lowStockTF = new JTextField("0");
 		lowStockTF.setBounds(150, 220, 150, 33);
 		addProductPanel.add(lowStockTF);
+
+		String[] categoryList = {"", "Candy", "Popcorn", "Small drink", "Large drink", "Hotdog"};
+		categoryCB = new JComboBox<String>(categoryList);
+		categoryCB.setSelectedIndex(0);
+		categoryCB.setBounds(150, 100, 150, 33);
+		addProductPanel.add(categoryCB);
 		
 		String[] typeList = {"", "Supply", "Menu", "Other"};
 		typeCB = new JComboBox<String>(typeList);
@@ -135,7 +151,7 @@ public class AddProductFrame extends JFrame implements ActionListener
 						JComboBox<String> combo = (JComboBox<String>) e.getSource();
 				        type = (String) combo.getSelectedItem();
 				        
-				        switch (type)
+				        switch(type)
 				        {
 				        case "":
 				        	break;
@@ -144,7 +160,8 @@ public class AddProductFrame extends JFrame implements ActionListener
 				        	setDisabled(priceTF);
 				        	setDisabled(emPriceTF);
 				        	setDisabled(addCBBtn);
-//				        	setDisabled(comboPanel);
+				        	setDisabled(comboPanel);
+				        	setDisabled(categoryCB);
 				        	setEnabled(lowStockTF);
 				        	break;
 				        case "Menu":
@@ -152,7 +169,8 @@ public class AddProductFrame extends JFrame implements ActionListener
 				        	setEnabled(priceTF);
 				        	setEnabled(emPriceTF);
 				        	setEnabled(addCBBtn);
-//				        	setEnabled(comboPanel);
+				        	setEnabled(comboPanel);
+				        	setEnabled(categoryCB);
 				        	setDisabled(lowStockTF);
 				        	break;
 				        case "Other":
@@ -160,19 +178,14 @@ public class AddProductFrame extends JFrame implements ActionListener
 				        	setDisabled(priceTF);
 				        	setDisabled(emPriceTF);
 				        	setDisabled(addCBBtn);
-//				        	setDisabled(comboPanel);
+				        	setDisabled(comboPanel);
+				        	setDisabled(categoryCB);
 				        	setEnabled(lowStockTF);
 				        	break;
 				        }
 					}
 				});
 		addProductPanel.add(typeCB);
-		
-		String[] categoryList = {"", "Candy", "Popcorn", "Small drink", "Large drink", "Hotdog"};
-		categoryCB = new JComboBox<String>(categoryList);
-		categoryCB.setSelectedIndex(0);
-		categoryCB.setBounds(150, 100, 150, 33);
-		addProductPanel.add(categoryCB);
 		
 		addCBBtn = new JButton();
 		addCBBtn.setBounds(110, 270, 33, 33);
@@ -189,9 +202,75 @@ public class AddProductFrame extends JFrame implements ActionListener
 		cancelBtn.addActionListener(this);
 		addProductPanel.add(cancelBtn);
 		
+		if(editMode == true)
+		{
+			addProductFrame.setTitle("Edit Product");
+			
+			setDisabled(typeCB);
+			
+			amountLabel = new JLabel("Amount:");
+			amountLabel.setBounds(20, 370, 100, 33);
+			addProductFrame.add(amountLabel);
+			
+			amountTF = new JTextField();
+			amountTF.setBounds(150, 370, 150, 33);
+			addProductFrame.add(amountTF);
+			
+			addBtn.setText("Apply changes");
+			
+			if(supply != null)
+			{
+				nameTF.setText(supply.getName());
+				type = "Supply";
+				typeCB.setSelectedItem("Supply");
+				lowStockTF.setText("" + supply.getLowStock());
+				amountTF.setText("" + supply.getAmount());
+			}
+			else if(menu != null)
+			{
+				nameTF.setText(menu.getName());
+				type = "Menu";
+				typeCB.setSelectedItem("Menu");
+				priceTF.setText("" + menu.getPrice());
+				emPriceTF.setText("" + menu.getEmployeePrice());
+				categoryCB.setSelectedItem(menu.getCategory());
+				
+				String[] materials = theMenu.getMaterial().split("&");
+				for(int i = 0; i < materials.length; i++)
+				{
+					if(materials[i].compareTo("") != 0)
+					{
+						materialCB[i].setVisible(true);
+						materialCB[i].setSelectedItem(materials[i]);
+						count++;
+					}
+				}
+				
+				setDisabled(amountTF);
+			}
+			else
+			{
+				nameTF.setText(other.getName());
+				type = "Other";
+				typeCB.setSelectedItem("Other");
+				lowStockTF.setText("" + other.getLowStock());
+				amountTF.setText("" + other.getAmount());
+			}
+		}
+		else
+		{
+			amountLabel = null;
+			amountTF = null;
+		}
+		
 		addProductFrame.add(addProductPanel);
 		addProductFrame.pack();
 		addProductFrame.setVisible(true);
+	}
+	
+	public AddProductFrame(InventoryPanel thePanel, ProductDAO theDAO)
+	{
+		this(thePanel, theDAO, false, null, null, null);
 	}
 	
 	public void actionPerformed(ActionEvent e)
@@ -215,30 +294,68 @@ public class AddProductFrame extends JFrame implements ActionListener
 				
 				if(type.compareTo("Supply") == 0)
 				{
-					Supply temp = new Supply(name, type, lowStock);
-					try
+					if(editMode)
 					{
-						dao.addSupply(temp);
-						addProductFrame.dispose();
-						inventoryPanel.refreshProductView();
+						supply.setName(name);
+						supply.setLowStock(lowStock);
+						supply.setAmount(Integer.parseInt(amountTF.getText()));
+						try
+						{
+							dao.updateSupply(supply);
+							inventoryPanel.refreshProductView();
+							addProductFrame.dispose();
+						}
+						catch (Exception e1)
+						{
+							JOptionPane.showMessageDialog(this, "Error applying the changes: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+						}
 					}
-					catch (Exception e1)
+					else
 					{
-						JOptionPane.showMessageDialog(this, "Error adding product: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+						Supply temp = new Supply(name, type, lowStock);
+						try
+						{
+							dao.addSupply(temp);
+							addProductFrame.dispose();
+							inventoryPanel.refreshProductView();
+						}
+						catch (Exception e1)
+						{
+							JOptionPane.showMessageDialog(this, "Error adding product: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+						}
 					}
 				}
 				else
 				{
-					Other temp = new Other(name, type, lowStock);
-					try
+					if(editMode)
 					{
-						dao.addOther(temp);
-						inventoryPanel.refreshProductView();
-						addProductFrame.dispose();
+						other.setName(name);
+						other.setLowStock(lowStock);
+						other.setAmount(Integer.parseInt(amountTF.getText()));
+						try
+						{
+							dao.updateOther(other);
+							inventoryPanel.refreshProductView();
+							addProductFrame.dispose();
+						}
+						catch (Exception e1)
+						{
+							JOptionPane.showMessageDialog(this, "Error applying the changes: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+						}
 					}
-					catch (Exception e1)
+					else
 					{
-						JOptionPane.showMessageDialog(this, "Error adding product: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+						Other temp = new Other(name, type, lowStock);
+						try
+						{
+							dao.addOther(temp);
+							inventoryPanel.refreshProductView();
+							addProductFrame.dispose();
+						}
+						catch (Exception e1)
+						{
+							JOptionPane.showMessageDialog(this, "Error adding product: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+						}
 					}
 				}
 			}
@@ -257,16 +374,39 @@ public class AddProductFrame extends JFrame implements ActionListener
 				}
 				double price = Double.parseDouble(priceTF.getText());
 				double emPrice = Double.parseDouble(emPriceTF.getText());
-				Menu temp = new Menu(name, type, category, material, price, emPrice);
-				try
+				
+				if(editMode)
 				{
-					dao.addMenu(temp);
-					inventoryPanel.refreshProductView();
-					addProductFrame.dispose();
+					menu.setName(name);
+					menu.setCategory(category);
+					menu.setMaterial(material);
+					menu.setPrice(price);
+					menu.setEmployeePrice(emPrice);
+					
+					try
+					{
+						dao.updateMenu(menu);
+						inventoryPanel.refreshProductView();
+						addProductFrame.dispose();
+					}
+					catch (Exception e1)
+					{
+						JOptionPane.showMessageDialog(this, "Error applying the changes: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					}
 				}
-				catch (Exception e1)
+				else
 				{
-					JOptionPane.showMessageDialog(this, "Error adding product: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					Menu temp = new Menu(name, type, category, material, price, emPrice);
+					try
+					{
+						dao.addMenu(temp);
+						inventoryPanel.refreshProductView();
+						addProductFrame.dispose();
+					}
+					catch (Exception e1)
+					{
+						JOptionPane.showMessageDialog(this, "Error adding product: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
 			else
