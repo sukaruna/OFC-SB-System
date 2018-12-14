@@ -514,7 +514,62 @@ public class ProductDAO
 		}
 	}
 	
-	public List<Record> getAllEditPriceRecord() throws SQLException
+	public void addRecord(Record theRecord) throws SQLException
+	{
+		PreparedStatement myPpSt1 = null;
+		PreparedStatement myPpSt2 = null;
+		
+		try
+		{
+			if(theRecord.getType().compareTo("Edit Price") == 0)
+			{
+				myPpSt1 = myConn.prepareStatement("INSERT INTO Record (type, date, menu_item, edited_price, original_price, differece, supply_item, reason, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				
+				myPpSt1.setString(1, theRecord.getType());
+				myPpSt1.setString(2, theRecord.getDate());
+				myPpSt1.setString(3, theRecord.getMenuItem());
+				myPpSt1.setDouble(4, theRecord.getEditedPrice());
+				myPpSt1.setDouble(5, theRecord.getOriginalPrice());
+				myPpSt1.setDouble(6, theRecord.getDifference());
+				myPpSt1.setString(7, theRecord.getSupplyItem());
+				myPpSt1.setString(8, theRecord.getReason());
+				myPpSt1.setInt(9, theRecord.getAmount());
+				
+				myPpSt1.executeUpdate();
+			}
+			else
+			{
+				myPpSt1 = myConn.prepareStatement("INSERT INTO Record (type, date, menu_item, edited_price, original_price, differece, supply_item, reason, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				
+				myPpSt1.setString(1, theRecord.getType());
+				myPpSt1.setString(2, theRecord.getDate());
+				myPpSt1.setString(3, theRecord.getMenuItem());
+				myPpSt1.setDouble(4, theRecord.getEditedPrice());
+				myPpSt1.setDouble(5, theRecord.getOriginalPrice());
+				myPpSt1.setDouble(6, theRecord.getDifference());
+				myPpSt1.setString(7, theRecord.getSupplyItem());
+				myPpSt1.setString(8, theRecord.getReason());
+				myPpSt1.setInt(9, theRecord.getAmount());
+				
+				List<Supply> temp = searchSupply(theRecord.getSupplyItem());
+				int id = temp.get(0).getID();
+				myPpSt2 = myConn.prepareStatement("UPDATE Supply SET amount=amount-? WHERE id=?");
+				myPpSt2.setInt(1, theRecord.getAmount());
+				myPpSt2.setInt(2, id);
+				myPpSt2.executeUpdate();
+				
+				myPpSt1.executeUpdate();
+				myPpSt2.executeUpdate();
+			}
+		}
+		finally
+		{
+			close(myPpSt1);
+			close(myPpSt2);
+		}
+	}
+	
+	public List<Record> getAllEditPriceRecords() throws SQLException
 	{
 		List<Record> list = new ArrayList<>();
 		
@@ -540,7 +595,7 @@ public class ProductDAO
 		}
 	}
 	
-	public List<Record> getAllDeleteInventoryRecord() throws SQLException
+	public List<Record> getAllDeleteInventoryRecords() throws SQLException
 	{
 		List<Record> list = new ArrayList<>();
 		

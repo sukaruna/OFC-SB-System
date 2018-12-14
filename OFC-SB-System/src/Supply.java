@@ -56,7 +56,6 @@ public class Supply extends Product
 			Date date2 = myFormat.parse(string2);
 			long diff = date1.getTime() - date2.getTime();
 			int days = (int) (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + 1);
-			System.out.println(days);
 			
 			if(days <= 13)
 			{

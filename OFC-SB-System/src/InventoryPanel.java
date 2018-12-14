@@ -60,7 +60,7 @@ public class InventoryPanel implements ActionListener
 		}
 		catch(Exception e1)
 		{
-			JOptionPane.showMessageDialog(this, "Error creating table: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error creating table: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		for(int i = 0; i < supplyTable.getColumnCount(); i++)
 		{
@@ -76,7 +76,7 @@ public class InventoryPanel implements ActionListener
 		}
 		catch(Exception e1)
 		{
-			JOptionPane.showMessageDialog(this, "Error creating table: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error creating table: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		for(int i = 0; i < menuTable.getColumnCount(); i++)
 		{
@@ -92,7 +92,7 @@ public class InventoryPanel implements ActionListener
 		}
 		catch(Exception e1)
 		{
-			e1.printStackTrace();
+			JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error creating table: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		for(int i = 0; i < otherTable.getColumnCount(); i++)
 		{
@@ -363,7 +363,7 @@ public class InventoryPanel implements ActionListener
 				}
 				catch(Exception e1)
 				{
-					
+					JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error searching product: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
@@ -452,8 +452,7 @@ public class InventoryPanel implements ActionListener
 				otherTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
 			}
 		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error: " + e1, "Error",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error: " + e1, "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		
 	}

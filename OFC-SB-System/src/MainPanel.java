@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class MainPanel implements ActionListener
@@ -76,14 +77,14 @@ public class MainPanel implements ActionListener
 			//remove all the content on the main frame and load the inventory system
 			MainFrame.overallFrame.getContentPane().removeAll();
 			MainFrame.overallFrame.repaint();
-			try
-			{
+//			try
+//			{
 				new InventoryPanel();
-			}
-			catch (Exception e1)
-			{
-				e1.printStackTrace();
-			}
+//			}
+//			catch (Exception e1)
+//			{
+//				JOptionPane.showMessageDialog(MainFrame.overallFrame, "You must select a product", "Error", JOptionPane.ERROR_MESSAGE);
+//			}
 		}
 		
 		if(e.getSource() == cashBtn)
