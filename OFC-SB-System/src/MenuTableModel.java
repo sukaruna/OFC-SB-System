@@ -9,7 +9,6 @@ import javax.swing.table.AbstractTableModel;
 
 class MenuTableModel extends AbstractTableModel
 {
-	public static final int OBJECT_COL = -1;
 	private static final int NAME_COL = 0;
 	private static final int CATEGORY_COL = 1;
 	private static final int PRICE_COL = 2;

@@ -24,7 +24,7 @@ public class InventoryPanel implements ActionListener
 	private JTable supplyTable, menuTable, otherTable;
 	private JTextField searchTF;
 	private JPanel inventoryPanel, switchPanel;
-	private JButton homeBtn, searchBtn, expirationBtn, lowStockBtn, addInventoryBtn, editBtn, addProductBtn, deleteBtn, supplyBtn, menuBtn, otherBtn;
+	private JButton homeBtn, searchBtn, expirationBtn, lowStockBtn, addInventoryBtn, editBtn, addProductBtn, deleteBtn, supplyBtn, menuBtn, otherBtn, recordBtn;
 	private String card = "Supply";
 	
 	//constructor
@@ -149,33 +149,38 @@ public class InventoryPanel implements ActionListener
 		inventoryPanel.add(expirationBtn);
 		
 		lowStockBtn = new JButton("Low-stocks");
-		lowStockBtn.setBounds(520, 160, 120, 33);
+		lowStockBtn.setBounds(520, 140, 120, 33);
 		lowStockBtn.addActionListener(this);
 		inventoryPanel.add(lowStockBtn);
 		
 		//create a new frame to add inventory to existing products if this button is clicked
 		addInventoryBtn = new JButton("Add Inventory");
-		addInventoryBtn.setBounds(520, 230, 120, 33);
+		addInventoryBtn.setBounds(520, 190, 120, 33);
 		addInventoryBtn.addActionListener(this);
 		inventoryPanel.add(addInventoryBtn);
 		
 		//create a new frame to edit the properties of selected product if this button is clicked
 		editBtn = new JButton("Edit Product");
-		editBtn.setBounds(520, 300, 120, 33);
+		editBtn.setBounds(520, 240, 120, 33);
 		editBtn.addActionListener(this);
 		inventoryPanel.add(editBtn);
 		
 		//create a new frame to add a new type of product if this button is clicked
 		addProductBtn = new JButton("Add Product");
-		addProductBtn.setBounds(520, 370, 120, 33);
+		addProductBtn.setBounds(520, 290, 120, 33);
 		addProductBtn.addActionListener(this);
 		inventoryPanel.add(addProductBtn);
 		
 		//delete selected product from the list
 		deleteBtn = new JButton("Delete Product");
-		deleteBtn.setBounds(520, 440, 120, 33);
+		deleteBtn.setBounds(520, 340, 120, 33);
 		deleteBtn.addActionListener(this);
 		inventoryPanel.add(deleteBtn);
+		
+		recordBtn = new JButton("Records");
+		recordBtn.setBounds(520, 390, 120, 33);
+		recordBtn.addActionListener(this);
+		inventoryPanel.add(recordBtn);
 		
 		//add the inventory panel to the main frame and pack
 		MainFrame.overallFrame.add(inventoryPanel);
@@ -422,6 +427,11 @@ public class InventoryPanel implements ActionListener
 				JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error deleting product: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
+		
+		if(e.getSource() == recordBtn)
+		{
+			new RecordFrame(dao);
+		}
 	}
 	
 	public void refreshProductView()
@@ -451,7 +461,9 @@ public class InventoryPanel implements ActionListener
 			{
 				otherTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
 			}
-		} catch (Exception e1) {
+		}
+		catch (Exception e1) 
+		{
 			JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error: " + e1, "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		

@@ -29,6 +29,7 @@ public class ProductDAO
 		String dbUrl = props.getProperty("dbUrl");
 		String user = props.getProperty("user");
 		String password = props.getProperty("password");
+		
 		//create connection
 		myConn = DriverManager.getConnection(dbUrl, user, password);
 	}
@@ -673,7 +674,7 @@ public class ProductDAO
 		String reason = myRs.getString("reason");
 		int amount = myRs.getInt("amount");
 		
-		Record tempRecord = new Record(id, type, menuItem, date, editedPrice, originalPrice, supplyItem, reason, amount);
+		Record tempRecord = new Record(id, type, date, menuItem, editedPrice, originalPrice, supplyItem, reason, amount);
 		return tempRecord;
 	}
 	

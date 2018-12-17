@@ -9,7 +9,6 @@ import javax.swing.table.AbstractTableModel;
 
 class SupplyTableModel extends AbstractTableModel
 {
-	public static final int OBJECT_COL = -1;
 	private static final int NAME_COL = 0;
 	private static final int LOW_STOCK_COL = 1;
 	private static final int AMOUNT_COL = 2;
