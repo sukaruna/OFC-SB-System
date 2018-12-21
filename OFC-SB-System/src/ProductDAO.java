@@ -570,17 +570,18 @@ public class ProductDAO
 		}
 	}
 	
-	public List<Record> getAllEditPriceRecords() throws SQLException
+	public List<Record> getAllRecords(String t) throws SQLException
 	{
 		List<Record> list = new ArrayList<>();
 		
 		Statement mySt = null;
 		ResultSet myRs = null;
 		
+		String type = "'" + t + "'";
 		try
 		{
 			mySt = myConn.createStatement();
-			myRs = mySt.executeQuery("SELECT * FROM Record WHERE type='Edit Price'");
+			myRs = mySt.executeQuery("SELECT * FROM Record WHERE type=" + type);
 			
 			while(myRs.next())
 			{
@@ -596,29 +597,48 @@ public class ProductDAO
 		}
 	}
 	
-	public List<Record> getAllDeleteInventoryRecords() throws SQLException
+	public void deleteRecord(int id) throws SQLException
 	{
-		List<Record> list = new ArrayList<>();
-		
+		PreparedStatement myPpSt = null;
 		Statement mySt = null;
-		ResultSet myRs = null;
 		
 		try
 		{
+			myPpSt = myConn.prepareStatement("DELETE FROM Record WHERE id=?");
+			myPpSt.setInt(1, id);
+			myPpSt.executeUpdate();
+			
 			mySt = myConn.createStatement();
-			myRs = mySt.executeQuery("SELECT * FROM Record WHERE type='Delete Inventory'");
-			
-			while(myRs.next())
-			{
-				Record temp = convertRowToRecord(myRs);
-				list.add(temp);
-			}
-			
-			return list;
+			mySt.execute("ALTER TABLE Record DROP id");
+			mySt.execute("ALTER TABLE Record ADD id INT NOT NULL AUTO_INCREMENT PRIMARY KEY");
 		}
 		finally
 		{
-			close(mySt, myRs);
+			close(myPpSt);
+			close(mySt);
+		}
+	}
+	
+	public void clearAllRecord(String t) throws SQLException
+	{
+		PreparedStatement myPpSt = null;
+		Statement mySt = null;
+		String type = "'" + t + "'";
+		
+		try
+		{
+			myPpSt = myConn.prepareStatement("DELETE FROM Record WHERE type=?");
+			myPpSt.setString(1, type);
+			myPpSt.executeUpdate();
+			
+			mySt = myConn.createStatement();
+			mySt.execute("ALTER TABLE Record DROP id");
+			mySt.execute("ALTER TABLE Record ADD id INT NOT NULL AUTO_INCREMENT PRIMARY KEY");
+		}
+		finally
+		{
+			close(mySt);
+			close(mySt);
 		}
 	}
 	
@@ -673,8 +693,9 @@ public class ProductDAO
 		double originalPrice = myRs.getDouble("original_price");
 		String reason = myRs.getString("reason");
 		int amount = myRs.getInt("amount");
+		int transNum = myRs.getInt("transaction_number");
 		
-		Record tempRecord = new Record(id, type, date, menuItem, editedPrice, originalPrice, supplyItem, reason, amount);
+		Record tempRecord = new Record(id, type, date, menuItem, editedPrice, originalPrice, supplyItem, reason, amount, transNum);
 		return tempRecord;
 	}
 	

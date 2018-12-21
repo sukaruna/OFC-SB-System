@@ -24,6 +24,8 @@ public class ExpirationFrame extends JFrame implements ActionListener
 	private JPanel expirationPanel;
 	private JScrollPane expirationPane;
 	private JButton deleteBtn, okBtn;
+	private JTable supplyTable;
+	private List<Supply> supplyList;
 	
 	public ExpirationFrame(ProductDAO theDAO)
 	{
@@ -41,10 +43,10 @@ public class ExpirationFrame extends JFrame implements ActionListener
 		expirationPanel = new JPanel();
 		expirationPanel.setLayout(null);
 		
-		JTable supplyTable = new JTable();
+		supplyTable = new JTable();
 		try
 		{
-			List<Supply> supplyList = dao.getCloseToExpirationSupplies();
+			supplyList = dao.getCloseToExpirationSupplies();
 			SupplyTableModel supplyModel = new SupplyTableModel(supplyList);
 			supplyTable.setModel(supplyModel);
 		}
@@ -81,7 +83,18 @@ public class ExpirationFrame extends JFrame implements ActionListener
 	{
 		if(e.getSource() == deleteBtn)
 		{
+			int row = supplyTable.getSelectedRow();
 			
+			Supply temp = supplyList.get(row);
+			temp.deleteClosestExDate();
+			try
+			{
+				dao.updateSupply(temp);
+			}
+			catch(Exception e1)
+			{
+				JOptionPane.showMessageDialog(this, "Error: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 		
 		if(e.getSource() == okBtn)

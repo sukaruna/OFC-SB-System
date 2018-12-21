@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class InventoryPanel implements ActionListener
 {
 	private ProductDAO dao;
-	DefaultTableCellRenderer dtcr;
+	private DefaultTableCellRenderer dtcr;
 	private JScrollPane supplyPane, menuPane, otherPane;
 	private JTable supplyTable, menuTable, otherTable;
 	private JTextField searchTF;
@@ -36,7 +36,7 @@ public class InventoryPanel implements ActionListener
 		}
 		catch(Exception e1)
 		{
-			e1.printStackTrace();
+			JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error connecting to database: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		
 		//setting for inventory panel
@@ -271,7 +271,7 @@ public class InventoryPanel implements ActionListener
 			}
 			catch(Exception e1)
 			{
-				e1.printStackTrace();;
+				JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error adding inventory: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		
@@ -466,6 +466,5 @@ public class InventoryPanel implements ActionListener
 		{
 			JOptionPane.showMessageDialog(MainFrame.overallFrame, "Error: " + e1, "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		
 	}
 }

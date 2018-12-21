@@ -5,11 +5,11 @@
 
 public class Record
 {
-	private int id, amount;
+	private int id, amount, transNum;
 	private String type, menuItem, supplyItem, date, reason;
 	private double editedPrice, originalPrice, difference;
 	
-	public Record(int i, String t, String d, String mi, double ep, double op, String si, String r, int a)
+	public Record(int i, String t, String d, String mi, double ep, double op, String si, String r, int a, int trans)
 	{
 		setID(id);
 		setType(type);
@@ -20,19 +20,25 @@ public class Record
 		setSupplyItem(si);
 		setReason(r);
 		setAmount(a);
+		setTransNum(trans);
 		difference = op - ep;
 	}
 	
 	//for editing price
 	public Record(int i, String t, String d, String mi, double ep, double op)
 	{
-		this(i, t, d, mi, ep, op, "", "", 0);
+		this(i, t, d, mi, ep, op, "", "", 0, 0);
 	}
 	
 	//for deleting inventory
 	public Record(int i, String t, String d, String si, String r, int a)
 	{
-		this(i, t, d, "", 0, 0, si, r, a);
+		this(i, t, d, "", 0, 0, si, r, a, 0);
+	}
+	
+	public Record(int i, String t, String d, int a, int trans)
+	{
+		this(i, t, d, "", 0, 0, "", "", a, trans);
 	}
 	
 	public void setID(int i)
@@ -78,6 +84,11 @@ public class Record
 	public void setAmount(int a)
 	{
 		amount = a;
+	}
+	
+	public void setTransNum(int trans)
+	{
+		transNum = trans;
 	}
 	
 	public int getID()
@@ -128,5 +139,10 @@ public class Record
 	public int getAmount()
 	{
 		return amount;
+	}
+	
+	public int getTransNum()
+	{
+		return transNum;
 	}
 }

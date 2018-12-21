@@ -10,14 +10,15 @@ import javax.swing.table.AbstractTableModel;
 public class RecordTableModel extends AbstractTableModel
 {
 	private static final int DATE_COL = 0;
-	private static final int MENU_ITEM_COL = 1;
-	private static final int ORIGINAL_PRICE_COL = 2;
-	private static final int EDITED_PRICE_COL = 3;
-	private static final int DIFFERENCE_COL = 4;
-	private static final int SUPPLY_ITEM_COL = 5;
-	private static final int REASON_COL = 6;
-	private static final int AMOUNT_COL = 7;
-	private String[] columnNames = {"Date", "Menu Item", "Original Price", "Edited Price", "Difference", "Supply Item", "Reason", "Amount"};
+	private static final int TRANS_NUM_COL = 1;
+	private static final int MENU_ITEM_COL = 2;
+	private static final int ORIGINAL_PRICE_COL = 3;
+	private static final int EDITED_PRICE_COL = 4;
+	private static final int DIFFERENCE_COL = 5;
+	private static final int SUPPLY_ITEM_COL = 6;
+	private static final int REASON_COL = 7;
+	private static final int AMOUNT_COL = 8;
+	private String[] columnNames = {"Date", "Transaction #", "Menu Item", "Original Price", "Edited Price", "Difference", "Supply Item", "Reason", "Amount"};
 	private List<Record> record;
 	
 	public RecordTableModel(List<Record> theRecord)
@@ -52,6 +53,8 @@ public class RecordTableModel extends AbstractTableModel
 		{
 		case DATE_COL:
 			return tempRecord.getDate();
+		case TRANS_NUM_COL:
+			return tempRecord.getTransNum();
 		case MENU_ITEM_COL:
 			return tempRecord.getMenuItem();
 		case ORIGINAL_PRICE_COL:
