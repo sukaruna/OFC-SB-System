@@ -34,6 +34,7 @@ public class ProductDAO
 		myConn = DriverManager.getConnection(dbUrl, user, password);
 	}
 	
+	//add the information of a Supply item to the database
 	public void addSupply(Supply theSupply) throws SQLException
 	{
 		PreparedStatement myPpSt = null;
@@ -56,6 +57,7 @@ public class ProductDAO
 		}
 	}
 	
+	//add the information of a Menu item to the database
 	public void addMenu(Menu theMenu) throws SQLException
 	{
 		PreparedStatement myPpSt = null;
@@ -80,6 +82,7 @@ public class ProductDAO
 		}
 	}
 	
+	//add the information of a Other item to the database
 	public void addOther(Other theOther) throws SQLException
 	{
 		PreparedStatement myPpSt = null;
@@ -101,6 +104,7 @@ public class ProductDAO
 		}
 	}
 	
+	//update the information of a Supply item existed in the database according to the id
 	public void updateSupply(Supply theSupply) throws SQLException
 	{
 		PreparedStatement myPpSt = null;
@@ -123,6 +127,7 @@ public class ProductDAO
 		}
 	}
 	
+	//update the information of a Menu item existed in the database according to the id
 	public void updateMenu(Menu theMenu) throws SQLException
 	{
 		PreparedStatement myPpSt = null;
@@ -147,6 +152,7 @@ public class ProductDAO
 		}
 	}
 	
+	//update the information of a Other item existed in the database according to the id
 	public void updateOther(Other theOther) throws SQLException
 	{
 		PreparedStatement myPpSt = null;
@@ -168,6 +174,7 @@ public class ProductDAO
 		}
 	}
 	
+	//return a list that contains all the Supply items that existed in the database
 	public List<Supply> getAllSupplies() throws Exception
 	{
 		List<Supply> list = new ArrayList<>();
@@ -194,6 +201,7 @@ public class ProductDAO
 		}
 	}
 	
+	//return a list that contains all the Menu items that existed in the database
 	public List<Menu> getAllMenus() throws SQLException
 	{
 		List<Menu> list = new ArrayList<>();
@@ -220,6 +228,7 @@ public class ProductDAO
 		}
 	}
 	
+	//return a list that contains all the Other items that existed in the database
 	public List<Other> getAllOthers() throws SQLException
 	{
 		List<Other> list = new ArrayList<>();
@@ -246,6 +255,7 @@ public class ProductDAO
 		}
 	}
 	
+	//return a list that contains the names of all Supply items in the database
 	public String[] getSupplyNames() throws SQLException
 	{
 		List<String> list = new ArrayList<>();
@@ -276,6 +286,7 @@ public class ProductDAO
 		}
 	}
 	
+	//return a list that contains all the Supply items that are in low-stock situation
 	public List<Supply> getLowStockSupplies() throws SQLException
 	{
 		List<Supply> list = new ArrayList<>();
@@ -302,6 +313,7 @@ public class ProductDAO
 		}
 	}
 	
+	//return a list that contains all the Other items that are in low-stock situation
 	public List<Other> getLowStockOthers() throws SQLException
 	{
 		List<Other> list = new ArrayList<>();
@@ -328,16 +340,17 @@ public class ProductDAO
 		}
 	}
 	
+	//return a list that contains all the Supply items whose 'name' contains the String that is wanted
 	public List<Supply> searchSupply(String name) throws SQLException
 	{
 		List<Supply> list = new ArrayList<>();
 		PreparedStatement myPpSt = null;
 		ResultSet myRs = null;
+
+		name += "%";
 		
 		try
 		{
-			name += "%";
-			
 			myPpSt = myConn.prepareStatement("SELECT * FROM Supply WHERE name LIKE ? ORDER BY name");
 			
 			myPpSt.setString(1, name);
@@ -358,6 +371,7 @@ public class ProductDAO
 		}
 	}
 	
+	////return a list that contains all the Menu items whose 'name' contains the String that is wanted
 	public List<Menu> searchMenu(String name) throws SQLException
 	{
 		List<Menu> list = new ArrayList<>();
@@ -388,6 +402,7 @@ public class ProductDAO
 		}
 	}
 	
+	//return a list that contains all the Other items whose 'name' contains the String that is wanted
 	public List<Other> searchOther(String name) throws SQLException
 	{
 		List<Other> list = new ArrayList<>();
@@ -418,6 +433,7 @@ public class ProductDAO
 		}
 	}
 	
+	//return a list that contains all the Supply item which are close to expiration date
 	public List<Supply> getCloseToExpirationSupplies() throws SQLException, ParseException
 	{
 		List<Supply> list = new ArrayList<>();
@@ -447,6 +463,7 @@ public class ProductDAO
 		}
 	}
 	
+	//decrease the 'amount' of Supply items which are the 'material's of a Menu item
 	public void decreaseInventory(Menu theMenu) throws SQLException
 	{
 		PreparedStatement myPpSt = null;
@@ -469,6 +486,7 @@ public class ProductDAO
 		}
 	}
 	
+	//delete a Product from the database depends on its type and id
 	public void deleteProduct(String type, int id) throws SQLException
 	{
 		PreparedStatement myPpSt = null;
@@ -491,6 +509,7 @@ public class ProductDAO
 		}
 	}
 	
+	//get the last id in a table in the database
 	public int getLastID(String type) throws SQLException
 	{
 		int lastID = 0;
@@ -515,6 +534,7 @@ public class ProductDAO
 		}
 	}
 	
+	//add a Record to the database
 	public void addRecord(Record theRecord) throws SQLException
 	{
 		PreparedStatement myPpSt1 = null;
@@ -597,6 +617,7 @@ public class ProductDAO
 		}
 	}
 	
+	//delete a Record from the database depends on its id
 	public void deleteRecord(int id) throws SQLException
 	{
 		PreparedStatement myPpSt = null;
@@ -619,29 +640,27 @@ public class ProductDAO
 		}
 	}
 	
+	//clear all the Records which have a certain 'type'
 	public void clearAllRecord(String t) throws SQLException
 	{
-		PreparedStatement myPpSt = null;
 		Statement mySt = null;
 		String type = "'" + t + "'";
-		
+
+		System.out.println(type);
 		try
 		{
-			myPpSt = myConn.prepareStatement("DELETE FROM Record WHERE type=?");
-			myPpSt.setString(1, type);
-			myPpSt.executeUpdate();
-			
 			mySt = myConn.createStatement();
+			mySt.execute("DELETE FROM Record WHERE type=" + type);
 			mySt.execute("ALTER TABLE Record DROP id");
 			mySt.execute("ALTER TABLE Record ADD id INT NOT NULL AUTO_INCREMENT PRIMARY KEY");
 		}
 		finally
 		{
 			close(mySt);
-			close(mySt);
 		}
 	}
 	
+	//convert a row in the database into a Supply object
 	private Supply convertRowToSupply(ResultSet myRs) throws SQLException
 	{
 		int id = myRs.getInt("id");
@@ -655,6 +674,7 @@ public class ProductDAO
 		return tempSupply;
 	}
 	
+	//convert a row in the database into a Menu object
 	private Menu convertRowToMenu(ResultSet myRs) throws SQLException
 	{
 		int id = myRs.getInt("id");
@@ -670,6 +690,7 @@ public class ProductDAO
 		return tempMenu;
 	}
 	
+	//convert a row in the database into an Other object
 	private Other convertRowToOther(ResultSet myRs) throws SQLException
 	{
 		int id = myRs.getInt("id");
@@ -682,6 +703,7 @@ public class ProductDAO
 		return tempOther;
 	}
 	
+	//convert a row in the database into a Record object
 	private Record convertRowToRecord(ResultSet myRs) throws SQLException
 	{
 		int id = myRs.getInt("id");
@@ -699,6 +721,7 @@ public class ProductDAO
 		return tempRecord;
 	}
 	
+	//close the connection, statement and resultset
 	private void close(Connection myConn, Statement mySt, ResultSet myRs) throws SQLException
 	{
 		if (myRs != null)
@@ -716,12 +739,14 @@ public class ProductDAO
 			myConn.close();
 		}
 	}
-
+	
+	//constructor of close method
 	private void close(Statement mySt, ResultSet myRs) throws SQLException
 	{
 		close(null, mySt, myRs);		
 	}
 	
+	//constructor of close method
 	private void close(Statement mySt) throws SQLException
 	{
 		close(null, mySt, null);

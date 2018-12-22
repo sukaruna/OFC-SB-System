@@ -246,21 +246,23 @@ public class RecordFrame extends JFrame implements ActionListener
 			}
 			else if(card.compareTo("Delete Inventory") == 0)
 			{
-				id = editPriceList.get(row).getID();
+				id = deleteInventoryList.get(row).getID();
 			}
 			else
 			{
-				id = editPriceList.get(row).getID();
+				id = debitTransList.get(row).getID();
 			}
-			
+			System.out.println(id);
 			try
 			{
 				dao.deleteRecord(id);
 			}
 			catch(Exception e1)
 			{
-				JOptionPane.showMessageDialog(this, "You must select a record:", "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Error deleting the record", "Error", JOptionPane.ERROR_MESSAGE);
 			}
+			
+			refreshRecordView();
 		}
 		
 		if(e.getSource() == clearBtn)

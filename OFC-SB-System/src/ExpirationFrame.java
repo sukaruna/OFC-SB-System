@@ -20,6 +20,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class ExpirationFrame extends JFrame implements ActionListener
 {
 	private ProductDAO dao;
+	private DefaultTableCellRenderer dtcr;
 	private JFrame expirationFrame;
 	private JPanel expirationPanel;
 	private JScrollPane expirationPane;
@@ -27,13 +28,16 @@ public class ExpirationFrame extends JFrame implements ActionListener
 	private JTable supplyTable;
 	private List<Supply> supplyList;
 	
+	//a constructor that can inherit the dao from inventoryPanel
 	public ExpirationFrame(ProductDAO theDAO)
 	{
 		dao = theDAO;
 		
-		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		//a table cell renderer in order to display table values at the center of the cell
+		dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalTextPosition(DefaultTableCellRenderer.CENTER);
 		
+		//settings for this frame
 		expirationFrame = new JFrame("Expirations");
 		expirationFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		expirationFrame.setPreferredSize(new Dimension(650,500));
@@ -43,6 +47,7 @@ public class ExpirationFrame extends JFrame implements ActionListener
 		expirationPanel = new JPanel();
 		expirationPanel.setLayout(null);
 		
+		//create a table that contains all the Supply items that are close to expiration date
 		supplyTable = new JTable();
 		try
 		{
@@ -54,11 +59,13 @@ public class ExpirationFrame extends JFrame implements ActionListener
 		{
 			JOptionPane.showMessageDialog(this, "Error creating table: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
+		//set all the text position in columns of supplyTable to center
 		for(int i = 0; i < supplyTable.getColumnCount(); i++)
 		{
 			supplyTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
 		}
 		
+		//
 		expirationPane = new JScrollPane();
 		expirationPane.setBounds(10, 10, 500, 400);
 		expirationPane.setViewportView(supplyTable);
@@ -94,6 +101,21 @@ public class ExpirationFrame extends JFrame implements ActionListener
 			catch(Exception e1)
 			{
 				JOptionPane.showMessageDialog(this, "Error: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			
+			try
+			{
+				supplyList = dao.getCloseToExpirationSupplies();
+				SupplyTableModel supplyModel = new SupplyTableModel(supplyList);
+				supplyTable.setModel(supplyModel);
+			}
+			catch(Exception e1)
+			{
+				JOptionPane.showMessageDialog(this, "Error creating table: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			for(int i = 0; i < supplyTable.getColumnCount(); i++)
+			{
+				supplyTable.getColumnModel().getColumn(i).setCellRenderer(dtcr);
 			}
 		}
 		

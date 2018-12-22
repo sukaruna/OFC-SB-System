@@ -11,8 +11,8 @@ public class Record
 	
 	public Record(int i, String t, String d, String mi, double ep, double op, String si, String r, int a, int trans)
 	{
-		setID(id);
-		setType(type);
+		setID(i);
+		setType(t);
 		setDate(d);
 		setMenuItem(mi);
 		setEditedPrice(ep);
